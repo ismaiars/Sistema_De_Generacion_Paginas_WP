@@ -5,78 +5,18 @@ import os
 import pyperclip
 import re
 import json
-import threading
-from urllib.parse import urlparse
-import requests
-from concurrent.futures import ThreadPoolExecutor
-
-# Cache global para plantillas HTML
-_PLANTILLA_CACHE = {}
-
-# Cache para validación de URLs
-_URL_VALIDATION_CACHE = {}
-
-# Función para validar URLs de imágenes en background
-def validar_url_imagen(url, timeout=5):
-    """Valida si una URL de imagen es accesible."""
-    if not url or url in _URL_VALIDATION_CACHE:
-        return _URL_VALIDATION_CACHE.get(url, False)
-    
-    try:
-        parsed = urlparse(url)
-        if not parsed.scheme or not parsed.netloc:
-            _URL_VALIDATION_CACHE[url] = False
-            return False
-            
-        response = requests.head(url, timeout=timeout, allow_redirects=True)
-        is_valid = response.status_code == 200 and 'image' in response.headers.get('content-type', '')
-        _URL_VALIDATION_CACHE[url] = is_valid
-        return is_valid
-    except:
-        _URL_VALIDATION_CACHE[url] = False
-        return False
-
-# Patrones regex compilados para mejor rendimiento
-_REGEX_PATTERNS = {
-    'img_src_1': re.compile(r'src="[^"]*RB2398-1_resultado\.webp"'),
-    'img_src_2': re.compile(r'src="[^"]*RB2398-2_resultado\.webp"'),
-    'img_src_3': re.compile(r'src="[^"]*RB2398-3_resultado\.webp"'),
-    'thumb_1': re.compile(r'src="[^"]*1_resultado\.webp"'),
-    'thumb_2': re.compile(r'src="[^"]*2_resultado\.webp"'),
-    'thumb_3': re.compile(r'src="[^"]*3_resultado\.webp"'),
-    'image_sources': re.compile(r'const imageSources = \[[^\]]*\];'),
-    'product_brand': re.compile(r'<h1[^>]*id="product-brand"[^>]*>[^<]*</h1>'),
-    'product_model': re.compile(r'<p[^>]*id="product-model"[^>]*>[^<]*</p>'),
-    'old_price': re.compile(r'<span class="text-2xl text-gray-400 line-through mr-2">[^<]*</span>'),
-    'discount_badge': re.compile(r'<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">[^<]*</span>'),
-    'new_price': re.compile(r'<span class="text-5xl font-extrabold text-black">[^<]*</span>')
-}
 
 # ---------------- FUNCIONES AUXILIARES PARA HTML ----------------
 def cargar_plantilla_html(path):
     if not os.path.exists(path):
         messagebox.showerror("Error", f"No se encontró la plantilla base '{os.path.basename(path)}'.")
         return None
-    
-    # Usar cache para evitar lecturas repetidas
-    if path in _PLANTILLA_CACHE:
-        return _PLANTILLA_CACHE[path]
-    
     with open(path, 'r', encoding='utf-8') as f:
-        contenido = f.read()
-        _PLANTILLA_CACHE[path] = contenido
-        return contenido
+        return f.read()
 
 def buscar_logo_marca(marca, logos_dict):
     # Normaliza la marca quitando espacios, minúsculas y caracteres especiales
-    # Optimización: usar translate para mejor rendimiento
-    if not marca:
-        return ''
-    
-    # Tabla de traducción para eliminar caracteres especiales de una vez
-    trans_table = str.maketrans('', '', ' -_')
-    clave = str(marca).strip().lower().translate(trans_table)
-    
+    clave = str(marca).strip().lower().replace(' ', '').replace('-', '').replace('_', '')
     print(f"[DEBUG] Buscando logo para marca: '{clave}' en {logos_dict}")
     logo = logos_dict.get(clave, '')
     if not logo:
@@ -123,30 +63,26 @@ def generar_pagina_individual_desde_plantilla(row, imagenes, plantilla_path):
     img1 = row.get('IMAGEN 1', '') or ''
     img2 = row.get('IMAGEN 2', '') or ''
     img3 = row.get('IMAGEN 3', '') or ''
-    
-    # Usar patrones regex compilados para mejor rendimiento
-    html = _REGEX_PATTERNS['img_src_1'].sub(f'src="{img1}"', html)
-    html = _REGEX_PATTERNS['img_src_2'].sub(f'src="{img2}"', html)
-    html = _REGEX_PATTERNS['img_src_3'].sub(f'src="{img3}"', html)
-    
+    # Reemplazo en <img> (todas las apariciones, no solo una)
+    html = re.sub(r'src="[^"]*RB2398-1_resultado\.webp"', f'src="{img1}"', html)
+    html = re.sub(r'src="[^"]*RB2398-2_resultado\.webp"', f'src="{img2}"', html)
+    html = re.sub(r'src="[^"]*RB2398-3_resultado\.webp"', f'src="{img3}"', html)
     # Reemplazo en miniaturas (puede haber más de una aparición por imagen)
-    html = _REGEX_PATTERNS['thumb_1'].sub(f'src="{img1}"', html)
-    html = _REGEX_PATTERNS['thumb_2'].sub(f'src="{img2}"', html)
-    html = _REGEX_PATTERNS['thumb_3'].sub(f'src="{img3}"', html)
-    
+    html = re.sub(r'src="[^"]*1_resultado\.webp"', f'src="{img1}"', html)
+    html = re.sub(r'src="[^"]*2_resultado\.webp"', f'src="{img2}"', html)
+    html = re.sub(r'src="[^"]*3_resultado\.webp"', f'src="{img3}"', html)
     # Reemplazo en el script JS (array imageSources, siempre 3, solo links del CSV/campos, o vacío)
     img1_js = f'"{img1}"'
     img2_js = f'"{img2}"'
     img3_js = f'"{img3}"'
-    html = _REGEX_PATTERNS['image_sources'].sub(f'const imageSources = [{img1_js}, {img2_js}, {img3_js}];', html)
+    html = re.sub(r'const imageSources = \[[^\]]*\];', f'const imageSources = [{img1_js}, {img2_js}, {img3_js}];', html)
 
     # --- Reemplazo de textos principales (marca, modelo, precios, descuento) ---
-    # Usar patrones regex compilados para mejor rendimiento
-    html = _REGEX_PATTERNS['product_brand'].sub(f'<h1 id="product-brand" class="text-4xl md:text-5xl font-bold text-orange-500 uppercase">{row.get("Valor(es) del atributo 2", "")}</h1>', html)
-    html = _REGEX_PATTERNS['product_model'].sub(f'<p id="product-model" class="text-xl text-gray-400 mb-4">{row.get("Valor(es) del atributo 1", "")}</p>', html)
-    html = _REGEX_PATTERNS['old_price'].sub(f'<span class="text-2xl text-gray-400 line-through mr-2">{row.get("Precio normal", "")}</span>', html)
-    html = _REGEX_PATTERNS['discount_badge'].sub(f'<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">{row.get("Porcentajede descuento", "")}</span>', html)
-    html = _REGEX_PATTERNS['new_price'].sub(f'<span class="text-5xl font-extrabold text-black">{row.get("precio con descuento", "")}</span>', html)
+    html = re.sub(r'<h1[^>]*id="product-brand"[^>]*>[^<]*</h1>', f'<h1 id="product-brand" class="text-4xl md:text-5xl font-bold text-orange-500 uppercase">{row.get("Valor(es) del atributo 2", "")}</h1>', html)
+    html = re.sub(r'<p[^>]*id="product-model"[^>]*>[^<]*</p>', f'<p id="product-model" class="text-xl text-gray-400 mb-4">{row.get("Valor(es) del atributo 1", "")}</p>', html)
+    html = re.sub(r'<span class="text-2xl text-gray-400 line-through mr-2">[^<]*</span>', f'<span class="text-2xl text-gray-400 line-through mr-2">{row.get("Precio normal", "")}</span>', html)
+    html = re.sub(r'<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">[^<]*</span>', f'<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">{row.get("Porcentajede descuento", "")}</span>', html)
+    html = re.sub(r'<span class="text-5xl font-extrabold text-black">[^<]*</span>', f'<span class="text-5xl font-extrabold text-black">{row.get("precio con descuento", "")}</span>', html)
 
     # --- Reemplazo de tabla de especificaciones ---
     # Mapeo de campos: (ajusta si tus columnas cambian)
@@ -197,19 +133,7 @@ class GeneradorCatalogoApp:
         }
         self.estado_filas = {}  # Dict para el estado visual de cada fila
         self.historial_estado_path = 'historial_estado_productos.json'
-        
-        # Variables para optimizaciones de Fase 2
-        self.progress_var = tk.StringVar(value="")
-        self.progress_label = None
-        self.executor = ThreadPoolExecutor(max_workers=4)
-        
         self.cargar_historial_estado()
-        
-        # Tabla de traducción para normalización de marcas (optimización)
-        self.trans_table = str.maketrans('', '', ' -_')
-        
-        # Configurar limpieza al cerrar
-        self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
 
         # --- Configuración de estilos modernos ---
         style = ttk.Style()
@@ -247,11 +171,6 @@ class GeneradorCatalogoApp:
         title1 = tk.Label(header1, text="Generación de Páginas Individuales", 
                          font=('Segoe UI', 16, 'bold'), fg="#212529", bg="#ffffff")
         title1.pack(side="left", pady=15)
-        
-        # Indicador de progreso
-        self.progress_label = tk.Label(header1, textvariable=self.progress_var,
-                                     font=('Segoe UI', 9), fg="#6c757d", bg="#ffffff")
-        self.progress_label.pack(side="right", pady=15)
         
         # Top frame horizontal para carga CSV y edición imágenes
         top_main1 = tk.Frame(self.tab1, bg="#ffffff")
@@ -572,26 +491,6 @@ class GeneradorCatalogoApp:
         except Exception:
             pass
     
-    def limpiar_cache_plantillas(self):
-        """Limpia el cache de plantillas HTML para liberar memoria"""
-        global _PLANTILLA_CACHE
-        _PLANTILLA_CACHE.clear()
-        print("[DEBUG] Cache de plantillas limpiado")
-        
-    def _on_closing(self):
-        """Limpia recursos al cerrar la aplicación."""
-        try:
-            # Cerrar el executor de threads
-            self.executor.shutdown(wait=False)
-            # Limpiar caches
-            global _PLANTILLA_CACHE, _URL_VALIDATION_CACHE
-            _PLANTILLA_CACHE.clear()
-            _URL_VALIDATION_CACHE.clear()
-        except:
-            pass
-        finally:
-            self.root.destroy()
-    
     def reiniciar_historial(self):
         """Reinicia el historial de estados de productos"""
         respuesta = messagebox.askyesno("Confirmar", 
@@ -631,13 +530,10 @@ class GeneradorCatalogoApp:
         self.entry_logos.delete(0, tk.END)
         self.entry_logos.insert(0, path)
         self.logos_dict = {}
-        # Tabla de traducción para normalización optimizada
-        trans_table = str.maketrans('', '', ' -_')
-        
         if path.endswith('.csv'):
             df = pd.read_csv(path)
             for _, row in df.iterrows():
-                marca = str(row.iloc[0]).strip().lower().translate(trans_table)
+                marca = str(row.iloc[0]).strip().lower().replace(' ', '').replace('-', '').replace('_', '')
                 logo = str(row.iloc[1]).strip()
                 self.logos_dict[marca] = logo
         else:
@@ -652,35 +548,18 @@ class GeneradorCatalogoApp:
                         marca, logo = line.split(',', 1)
                     else:
                         marca, logo = line.split(None, 1)
-                    # Usar la misma normalización optimizada
-                    marca_normalizada = marca.strip().lower().translate(trans_table)
-                    self.logos_dict[marca_normalizada] = logo.strip()
+                    self.logos_dict[marca.strip().lower().replace(' ', '').replace('-', '').replace('_', '')] = logo.strip()
         messagebox.showinfo("Éxito", "Archivo de logos cargado correctamente.")
 
     def cargar_csv(self):
         path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv"), ("Excel Files", "*.xlsx")])
         if not path:
             return
-            
-        # Mostrar indicador de progreso
-        self.progress_var.set("Cargando archivo...")
-        self.root.update_idletasks()
-        
-        try:
-            if path.endswith('.xlsx'):
-                self.df = pd.read_excel(path)
-            else:
-                self.df = pd.read_csv(path)
-            self.campos_csv = list(self.df.columns)
-            
-            # Actualizar progreso
-            self.progress_var.set(f"Procesando {len(self.df)} filas...")
-            self.root.update_idletasks()
-            
-        except Exception as e:
-            self.progress_var.set("")
-            messagebox.showerror("Error", f"Error al cargar archivo: {str(e)}")
-            return
+        if path.endswith('.xlsx'):
+            self.df = pd.read_excel(path)
+        else:
+            self.df = pd.read_csv(path)
+        self.campos_csv = list(self.df.columns)
         # Eliminar tabla anterior si existe
         if self.tree:
             self.tree.destroy()
@@ -748,49 +627,14 @@ class GeneradorCatalogoApp:
         self.xscroll.config(command=self.tree.xview)
         self.tree.delete(*self.tree.get_children())
         self.checked_rows = {}
-        
-        # Optimización: Insertar filas en lotes para mejor rendimiento
-        total_rows = len(self.df)
-        batch_size = 100
-        
-        for batch_start in range(0, total_rows, batch_size):
-            batch_end = min(batch_start + batch_size, total_rows)
-            
-            # Actualizar progreso
-            progress = int((batch_start / total_rows) * 100)
-            self.progress_var.set(f"Cargando filas: {progress}% ({batch_start}/{total_rows})")
-            self.root.update_idletasks()
-            
-            # Procesar lote
-            for idx in range(batch_start, batch_end):
-                row = self.df.iloc[idx]
-                iid = str(idx)
-                self.checked_rows[iid] = False
-                values = [str(idx + 1), "", *[row.get(col, "") for col in self.campos_csv]]
-                self.tree.insert("", "end", iid=iid, values=values)
-        
+        for idx, (_, row) in enumerate(self.df.iterrows()):
+            iid = str(idx)
+            self.checked_rows[iid] = False
+            values = [str(idx + 1), "", *[row.get(col, "") for col in self.campos_csv]]
+            self.tree.insert("", "end", iid=iid, values=values)
         # Restaurar colores/estados desde historial
-        self.progress_var.set("Restaurando estados...")
-        self.root.update_idletasks()
-        
         for rowid, estado in self.estado_filas.items():
             self.set_estado_fila(rowid, estado)
-            
-        # Limpiar indicador de progreso
-        self.progress_var.set("")
-        messagebox.showinfo("Éxito", f"Archivo CSV cargado: {total_rows} productos")
-        
-    def _mostrar_resultado_validacion(self, urls_invalidas):
-        """Muestra el resultado de la validación de URLs."""
-        self.progress_var.set("")
-        
-        if urls_invalidas:
-            msg = f"⚠️ URLs no válidas detectadas: {', '.join(urls_invalidas)}\n\nPuedes continuar, pero verifica estas imágenes."
-            messagebox.showwarning("Validación de URLs", msg)
-        else:
-            self.progress_var.set("✅ URLs validadas")
-            # Limpiar mensaje después de 3 segundos
-            self.root.after(3000, lambda: self.progress_var.set(""))
         # Menú contextual
         self.menu_contextual = tk.Menu(self.tree, tearoff=0)
         self.menu_contextual.add_command(label="Marcar como OK (Verde)", command=lambda: self.menu_marcar_estado('verde'))
@@ -864,11 +708,6 @@ class GeneradorCatalogoApp:
 
     def update_checkbox_and_color(self, rowid):
         checked = self.checked_rows.get(rowid, False)
-        
-        # Optimización: Usar tree.set() en lugar de tree.item() para mejor rendimiento
-        checkbox_symbol = "✓" if checked else ""
-        self.tree.set(rowid, "_checked", checkbox_symbol)
-        
         # Cambiar color de fondo
         if checked:
             self.set_estado_fila(rowid, 'verde')
@@ -964,32 +803,13 @@ class GeneradorCatalogoApp:
         if self.producto_actual is None:
             messagebox.showwarning("Advertencia", "Selecciona un producto de la tabla.")
             return
-            
         imagenes = [self.img1.get(), self.img2.get(), self.img3.get()]
-        
-        # Validación de URLs en background (Fase 2)
-        self.progress_var.set("Validando imágenes...")
-        self.root.update_idletasks()
-        
-        def validar_imagenes_async():
-            urls_invalidas = []
-            for i, img_url in enumerate(imagenes, 1):
-                if img_url and str(img_url).lower() != 'nan':
-                    if not validar_url_imagen(img_url):
-                        urls_invalidas.append(f"Imagen {i}")
-            
-            # Actualizar UI en el hilo principal
-            self.root.after(0, lambda: self._mostrar_resultado_validacion(urls_invalidas))
-        
-        # Ejecutar validación en background
-        self.executor.submit(validar_imagenes_async)
         faltan = [i for i, img in enumerate(imagenes, 1) if not img or str(img).lower() == 'nan']
         if faltan:
             msg = "Faltan los siguientes links: " + ", ".join([f"Imagen {i}" for i in faltan]) + ". Puedes continuar, pero revisa que la tarjeta tenga todos los recursos."
             messagebox.showwarning("Advertencia", msg)
-        # Usar normalización optimizada
-        marca_original = self.producto_actual.get("Valor(es) del atributo 2", "")
-        logo = buscar_logo_marca(marca_original, self.logos_dict)
+        marca = self.producto_actual.get("Valor(es) del atributo 2", "").strip().lower().replace(' ', '').replace('-', '').replace('_', '')
+        logo = buscar_logo_marca(marca, self.logos_dict)
         if not logo:
             messagebox.showwarning("Advertencia", f"No se encontró logo para la marca '{self.producto_actual.get('Valor(es) del atributo 2', '')}'. Verifica el archivo de logos.")
         plantilla_tarjeta = self.plantilla_tarjeta if self.plantilla_tarjeta else (
