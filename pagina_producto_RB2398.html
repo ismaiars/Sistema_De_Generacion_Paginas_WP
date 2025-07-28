@@ -1,0 +1,227 @@
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+    }
+    .active-thumbnail {
+        border-color: #f97316;
+        box-shadow: 0 0 0 2px #f97316;
+    }
+    .main-image-container {
+        position: relative;
+    }
+    .main-image-container img {
+        transition: opacity 0.5s ease-in-out;
+    }
+    .main-image-container.loading img {
+        opacity: 0.5;
+    }
+    .fullscreen-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        cursor: zoom-out;
+    }
+    .fullscreen-image {
+        max-width: 90%;
+        max-height: 90%;
+    }
+    #fullscreen-button,
+    #fullscreen-overlay {display:none!important;}
+</style>
+<div class="container mx-auto p-4 md:p-8">
+    
+    <main class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        
+        <div class="flex flex-col items-center">
+            <div class="main-image-container w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-sm mb-4 flex items-center justify-center p-4 h-80">
+                <img id="main-product-image" src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-1_resultado.webp" alt="Vista principal del producto" class="max-w-full max-h-full object-contain rounded-md">
+                <button id="prev-image" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2 ml-2 hover:bg-opacity-75 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button id="next-image" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2 mr-2 hover:bg-opacity-75 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </button>
+                <button id="fullscreen-button" class="absolute top-2 right-2 bg-white bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m7 7l5 5m0 0v-4m0 4h-4" /></svg>
+                </button>
+            </div>
+            
+            <div id="thumbnail-container" class="flex justify-center gap-4">
+                <div class="w-24 h-24 border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-orange-400 transition-all">
+                    <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-1_resultado.webp" alt="Thumbnail 1" class="thumbnail-img w-full h-full object-cover rounded-md">
+                </div>
+                <div class="w-24 h-24 border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-orange-400 transition-all">
+                    <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-2_resultado.webp" alt="Thumbnail 2" class="thumbnail-img w-full h-full object-cover rounded-md">
+                </div>
+                <div class="w-24 h-24 border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-orange-400 transition-all">
+                    <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-3_resultado.webp" alt="Thumbnail 3" class="thumbnail-img w-full h-full object-cover rounded-md">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col justify-center">
+            <h1 id="product-brand" class="text-4xl md:text-5xl font-bold text-orange-500 uppercase">RAY BAN</h1>
+            <p id="product-model" class="text-xl text-gray-400 mb-4">RB2398</p>
+            
+            <div class="mb-4">
+                <span class="text-2xl text-gray-400 line-through mr-2">$6,250.00</span>
+                <span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">-15%</span>
+                <span class="text-5xl font-extrabold text-black">$5,312.50</span>
+                <span class="text-lg font-medium text-gray-500">MXN</span>
+            </div>
+
+            <div class="mb-6 space-y-2">
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 rounded-md">
+                    <p class="text-sm font-semibold">Pago únicamente por transferencia</p>
+                </div>
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 rounded-md">
+                    <p class="text-sm font-semibold">Sujeto a existencias</p>
+                </div>
+            </div>
+
+            <a id="whatsapp-button" href="https://api.whatsapp.com/send?phone=7225065267&text=Hola!!%20Quiero%20mas%20informaci%C3%B3n" target="_blank" class="w-full sm:w-auto flex-grow bg-white border-2 border-orange-500 text-orange-500 font-bold py-3 px-8 rounded-lg shadow-md hover:bg-orange-500 hover:text-white transition-all duration-300 transform hover:scale-105 flex justify-center items-center gap-2 mb-8">
+                <img id="whatsapp-icon" src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/whatsapp-1.png" alt="WhatsApp Icon" class="w-6 h-6 mr-2"> Realiza tu Pedido
+            </a>
+
+            <div class="border border-gray-200 rounded-lg bg-white">
+                <table class="w-full text-left text-sm">
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700 w-1/3">SKU</td><td class="py-3 px-4 text-gray-800">RB2398</td></tr>
+                        <tr><td class="py-3 px-4 font-semibold text-gray-700">Marca</td><td class="py-3 px-4 text-gray-800">RAYBAN</td></tr>
+                        <tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Tipo</td><td class="py-3 px-4 text-gray-800">Lente oftálmico</td></tr>
+                        <tr><td class="py-3 px-4 font-semibold text-gray-700">Color</td><td class="py-3 px-4 text-gray-800">Transparente con negro</td></tr>
+                        <tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Forma</td><td class="py-3 px-4 text-gray-800">Ovalado</td></tr>
+                        <tr><td class="py-3 px-4 font-semibold text-gray-700">Material</td><td class="py-3 px-4 text-gray-800">Acetato</td></tr>
+                        <tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Varillas</td><td class="py-3 px-4 text-gray-800">Acetato</td></tr>
+                        <tr><td class="py-3 px-4 font-semibold text-gray-700">Clip</td><td class="py-3 px-4 text-gray-800">Sin clip</td></tr>
+                        <tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Color de Mica</td><td class="py-3 px-4 text-gray-800">Transparente</td></tr>
+                        <tr><td class="py-3 px-4 font-semibold text-gray-700">Medida</td><td class="py-3 px-4 text-gray-800">Mediano</td></tr>
+                        <tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Puente</td><td class="py-3 px-4 text-gray-800">Puente anatómico</td></tr>
+                        <tr><td class="py-3 px-4 font-semibold text-gray-700">Accesorios</td><td class="py-3 px-4 text-gray-800">Lente, paño, estuche y líquido antirreflejante</td></tr>
+                        <tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Garantía</td><td class="py-3 px-4 text-gray-800">30 días de garantía contra defectos de fábrica.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="fullscreen-overlay" class="fullscreen-overlay hidden">
+    <img id="fullscreen-image" src="" alt="Imagen en pantalla completa" class="fullscreen-image">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageSources = [
+            'https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-1_resultado.webp',
+            'https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-2_resultado.webp',
+            'https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-3_resultado.webp'
+        ];
+        const slideIntervalTime = 3000;
+
+        const whatsappIconDefault = 'https://opticaskairoz.com.mx/wp-content/uploads/2025/07/whatsapp-1.png';
+        const whatsappIconHover = 'https://opticaskairoz.com.mx/wp-content/uploads/2025/07/whatsapp-2.png';
+
+        const mainImage = document.getElementById('main-product-image');
+        const mainImageContainer = document.querySelector('.main-image-container');
+        const thumbnailContainer = document.getElementById('thumbnail-container');
+        const thumbnailDivs = thumbnailContainer.querySelectorAll('div');
+        const prevImageButton = document.getElementById('prev-image');
+        const nextImageButton = document.getElementById('next-image');
+        const fullscreenButton = document.getElementById('fullscreen-button');
+        const fullscreenOverlay = document.getElementById('fullscreen-overlay');
+        if (fullscreenOverlay && fullscreenOverlay.parentElement !== document.body) {
+            document.body.appendChild(fullscreenOverlay);
+        }
+        const fullscreenImage = document.getElementById('fullscreen-image');
+        const whatsappButton = document.getElementById('whatsapp-button');
+        const whatsappIcon = document.getElementById('whatsapp-icon');
+
+        let currentImageIndex = 0;
+        let slideshowInterval;
+
+        function changeImage(index) {
+            mainImageContainer.classList.add('loading');
+            setTimeout(() => {
+                currentImageIndex = index;
+                const newImageSrc = imageSources[currentImageIndex];
+                mainImage.src = newImageSrc;
+                mainImage.alt = `Vista ${currentImageIndex + 1} del producto`;
+                updateActiveThumbnail();
+                mainImageContainer.classList.remove('loading');
+            }, 200);
+        }
+
+        function updateActiveThumbnail() {
+            thumbnailDivs.forEach((div, index) => {
+                div.classList.toggle('active-thumbnail', index === currentImageIndex);
+            });
+        }
+
+        function nextImage() {
+            changeImage((currentImageIndex + 1) % imageSources.length);
+        }
+
+        function prevImage() {
+            changeImage((currentImageIndex - 1 + imageSources.length) % imageSources.length);
+        }
+
+        function startSlideshow() {
+            stopSlideshow();
+            slideshowInterval = setInterval(nextImage, slideIntervalTime);
+        }
+        
+        function stopSlideshow() {
+            clearInterval(slideshowInterval);
+        }
+
+        function openFullscreen() {
+            fullscreenImage.src = imageSources[currentImageIndex];
+            fullscreenOverlay.classList.remove('hidden');
+        }
+
+        function closeFullscreen() {
+            fullscreenOverlay.classList.add('hidden');
+        }
+
+        thumbnailDivs.forEach((div, index) => {
+            div.addEventListener('click', () => {
+                stopSlideshow();
+                changeImage(index);
+            });
+        });
+
+        prevImageButton.addEventListener('click', () => { stopSlideshow(); prevImage(); });
+        nextImageButton.addEventListener('click', () => { stopSlideshow(); nextImage(); });
+        fullscreenButton.addEventListener('click', openFullscreen);
+        fullscreenOverlay.addEventListener('click', closeFullscreen);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeFullscreen();
+        });
+
+        whatsappButton.addEventListener('mouseenter', () => {
+            whatsappIcon.src = whatsappIconHover;
+        });
+
+        whatsappButton.addEventListener('mouseleave', () => {
+            whatsappIcon.src = whatsappIconDefault;
+        });
+
+        whatsappButton.addEventListener('click', () => {
+            window.open('https://api.whatsapp.com/send?phone=7225065267&text=Hola!!%20Quiero%20mas%20informaci%C3%B3n', '_blank');
+        });
+
+        whatsappIcon.src = whatsappIconDefault;
+        updateActiveThumbnail(); 
+        startSlideshow();
+    });
+</script> 
