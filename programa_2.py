@@ -150,23 +150,26 @@ def generar_pagina_individual_desde_plantilla(row, imagenes, plantilla_path):
 
     # --- Reemplazo de tabla de especificaciones ---
     # Mapeo de campos: (ajusta si tus columnas cambian)
-    tabla_map = [
-        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700 w-1/3">SKU</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700 w-1/3">SKU</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 1", "")}</td></tr>'),
-        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Marca</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Marca</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 2", "")}</td></tr>'),
-        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Tipo</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Tipo</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 3", "")}</td></tr>'),
-        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Color</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Color</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 4", "")}</td></tr>'),
-        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Forma</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Forma</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 5", "")}</td></tr>'),
-        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Material</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Material</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 6", "")}</td></tr>'),
-        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Varillas</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Varillas</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 7", "")}</td></tr>'),
-        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Clip</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Clip</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 8", "")}</td></tr>'),
-        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Color de Mica</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Color de Mica</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 9", "")}</td></tr>'),
-        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Medida</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Medida</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 10", "")}</td></tr>'),
-        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Puente</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Puente</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 11", "")}</td></tr>'),
-        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Accesorios</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Accesorios</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 12", "")}</td></tr>'),
-        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Garantía</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Garantía</td><td class="py-3 px-4 text-gray-800">{row.get("Valor(es) del atributo 13", "")}</td></tr>'),
+    # Usar lambda functions para evitar problemas con group references
+    tabla_replacements = [
+        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700 w-1/3">SKU</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 1", "")),
+        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Marca</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 2", "")),
+        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Tipo</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 3", "")),
+        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Color</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 4", "")),
+        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Forma</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 5", "")),
+        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Material</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 6", "")),
+        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Varillas</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 7", "")),
+        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Clip</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 8", "")),
+        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Color de Mica</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 9", "")),
+        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Medida</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 10", "")),
+        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Puente</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 11", "")),
+        (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Accesorios</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 12", "")),
+        (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Garantía</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', row.get("Valor(es) del atributo 13", "")),
     ]
-    for patron, reemplazo in tabla_map:
-        html = re.sub(patron, reemplazo, html)
+    
+    for patron, valor in tabla_replacements:
+        # Use lambda function to safely replace without group reference issues
+        html = re.sub(patron, lambda m: m.group(0).replace('[^<]*', valor), html)
 
     return html
 
@@ -238,6 +241,10 @@ class GeneradorCatalogoApp:
         # --- Pestaña 2: Tarjeta individual y catálogo ---
         self.tab2 = tk.Frame(self.notebook, bg="#ffffff")
         self.notebook.add(self.tab2, text="  Catálogo y Tarjetas  ")
+        
+        # --- Pestaña 3: Generación masiva ---
+        self.tab3 = tk.Frame(self.notebook, bg="#ffffff")
+        self.notebook.add(self.tab3, text="  Generación Masiva  ")
 
         # --- Pestaña 1 ---
         # Header con título
@@ -297,8 +304,14 @@ class GeneradorCatalogoApp:
         self.tree = None
         self.tree_frame = tk.Frame(self.tab1, bg="#ffffff")
         self.tree_frame.pack(fill="both", expand=True, padx=20, pady=(0, 10))
+        
+        # Scrollbars para el TreeView individual
+        self.yscroll = tk.Scrollbar(self.tree_frame, orient='vertical')
         self.xscroll = tk.Scrollbar(self.tree_frame, orient='horizontal')
-        self.xscroll.pack(side='bottom', fill='x')
+        
+        # Configurar grid para scrollbars
+        self.tree_frame.grid_rowconfigure(0, weight=1)
+        self.tree_frame.grid_columnconfigure(0, weight=1)
         # Frame horizontal para edición de imágenes y datos producto
         edit_main1 = tk.Frame(top_main1, bg="#ffffff")
         edit_main1.pack(fill="x", pady=(0, 10))
@@ -517,8 +530,7 @@ class GeneradorCatalogoApp:
         self.txt_tarjeta_scroll_y.config(command=self.txt_tarjeta.yview)
         self.txt_tarjeta_scroll_x.config(command=self.txt_tarjeta.xview)
         
-        # Configurar efectos hover para botones
-        self._setup_button_hover_effects()
+        # Los efectos hover se configurarán al final del constructor
 
         # Sincronización de imágenes y datos entre pestañas
         self.img1.bind('<KeyRelease>', self.sync_images_to_tab2)
@@ -528,12 +540,200 @@ class GeneradorCatalogoApp:
         self.img2_2.bind('<KeyRelease>', self.sync_images_to_tab1)
         self.img3_2.bind('<KeyRelease>', self.sync_images_to_tab1)
         self.notebook.bind('<<NotebookTabChanged>>', self.update_tab2_fields)
+        
+        # --- Pestaña 3: Generación Masiva ---
+        # Header con título
+        header3 = tk.Frame(self.tab3, bg="#ffffff", height=60)
+        header3.pack(fill="x", padx=20, pady=(20, 10))
+        header3.pack_propagate(False)
+        title3 = tk.Label(header3, text="Generación Masiva de Páginas", 
+                         font=('Segoe UI', 16, 'bold'), fg="#212529", bg="#ffffff")
+        title3.pack(side="left", pady=15)
+        
+        # Indicador de progreso para pestaña 3
+        self.progress_var_masiva = tk.StringVar(value="")
+        self.progress_label_masiva = tk.Label(header3, textvariable=self.progress_var_masiva,
+                                            font=('Segoe UI', 9), fg="#6c757d", bg="#ffffff")
+        self.progress_label_masiva.pack(side="right", pady=15)
+        
+        # Frame principal de configuración
+        config_frame3 = tk.LabelFrame(self.tab3, text="Configuración para Generación Masiva",
+                                     font=('Segoe UI', 10, 'bold'), fg="#495057", bg="#ffffff",
+                                     relief="solid", bd=1)
+        config_frame3.pack(fill="x", padx=20, pady=10)
+        
+        config_controls3 = tk.Frame(config_frame3, bg="#ffffff")
+        config_controls3.pack(fill="x", padx=15, pady=15)
+        
+        # Fila 1: Plantilla HTML
+        row1_3 = tk.Frame(config_controls3, bg="#ffffff")
+        row1_3.pack(fill="x", pady=(0, 10))
+        
+        tk.Label(row1_3, text="Plantilla HTML:", font=('Segoe UI', 9, 'bold'), 
+                fg="#495057", bg="#ffffff").pack(side="left")
+        self.plantilla_masiva_path = tk.StringVar()
+        self.entry_plantilla_masiva = tk.Entry(row1_3, textvariable=self.plantilla_masiva_path,
+                                              font=('Segoe UI', 9), width=50)
+        self.entry_plantilla_masiva.pack(side="left", padx=(10, 5))
+        
+        self.btn_buscar_plantilla_masiva = tk.Button(row1_3, text="📁 Buscar", 
+                                                    command=self.buscar_plantilla_masiva,
+                                                    font=('Segoe UI', 9), fg="#ffffff", bg="#28a745",
+                                                    relief="flat", padx=15, pady=5, cursor="hand2")
+        self.btn_buscar_plantilla_masiva.pack(side="left", padx=5)
+        
+        # Fila 2: Directorio de salida
+        row2_3 = tk.Frame(config_controls3, bg="#ffffff")
+        row2_3.pack(fill="x", pady=(0, 10))
+        
+        tk.Label(row2_3, text="Directorio de salida:", font=('Segoe UI', 9, 'bold'), 
+                fg="#495057", bg="#ffffff").pack(side="left")
+        self.directorio_salida = tk.StringVar()
+        self.entry_directorio_salida = tk.Entry(row2_3, textvariable=self.directorio_salida,
+                                               font=('Segoe UI', 9), width=50)
+        self.entry_directorio_salida.pack(side="left", padx=(10, 5))
+        
+        self.btn_buscar_directorio = tk.Button(row2_3, text="📁 Buscar", 
+                                              command=self.buscar_directorio_salida,
+                                              font=('Segoe UI', 9), fg="#ffffff", bg="#28a745",
+                                              relief="flat", padx=15, pady=5, cursor="hand2")
+        self.btn_buscar_directorio.pack(side="left", padx=5)
+        
+        # Frame de selección de productos
+        selection_frame = tk.LabelFrame(self.tab3, text="Selección de Productos",
+                                       font=('Segoe UI', 10, 'bold'), fg="#495057", bg="#ffffff",
+                                       relief="solid", bd=1)
+        selection_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        selection_controls = tk.Frame(selection_frame, bg="#ffffff")
+        selection_controls.pack(fill="x", padx=15, pady=(15, 10))
+        
+        # Botones de selección
+        self.btn_seleccionar_todos = tk.Button(selection_controls, text="✅ Seleccionar Todos",
+                                              command=self.seleccionar_todos_masiva,
+                                              font=('Segoe UI', 9), fg="#ffffff", bg="#17a2b8",
+                                              relief="flat", padx=15, pady=5, cursor="hand2")
+        self.btn_seleccionar_todos.pack(side="left", padx=(0, 10))
+        
+        self.btn_deseleccionar_todos = tk.Button(selection_controls, text="❌ Deseleccionar Todos",
+                                                 command=self.deseleccionar_todos_masiva,
+                                                 font=('Segoe UI', 9), fg="#ffffff", bg="#6c757d",
+                                                 relief="flat", padx=15, pady=5, cursor="hand2")
+        self.btn_deseleccionar_todos.pack(side="left", padx=(0, 10))
+        
+        self.btn_seleccionar_marcados = tk.Button(selection_controls, text="✅ Solo Marcados (Verde)",
+                                                  command=self.seleccionar_marcados_masiva,
+                                                  font=('Segoe UI', 9), fg="#ffffff", bg="#28a745",
+                                                  relief="flat", padx=15, pady=5, cursor="hand2")
+        self.btn_seleccionar_marcados.pack(side="left")
+        
+        # Información de selección
+        info_selection = tk.Frame(selection_controls, bg="#ffffff")
+        info_selection.pack(side="right")
+        
+        self.lbl_seleccionados = tk.Label(info_selection, text="Seleccionados: 0",
+                                          font=('Segoe UI', 9, 'bold'), fg="#495057", bg="#ffffff")
+        self.lbl_seleccionados.pack(side="right")
+        
+        # TreeView para mostrar productos en pestaña masiva
+        tree_frame_masiva = tk.Frame(selection_frame, bg="#ffffff")
+        tree_frame_masiva.pack(fill="both", expand=True, padx=15, pady=(0, 15))
+        
+        # Scrollbars para el TreeView masiva
+        scrollbar_y_masiva = ttk.Scrollbar(tree_frame_masiva, orient="vertical")
+        scrollbar_x_masiva = ttk.Scrollbar(tree_frame_masiva, orient="horizontal")
+        
+        # Configurar estilo para TreeView masivo
+        style = ttk.Style()
+        style.configure('Masiva.Treeview', 
+                       background='#ffffff',
+                       foreground='#212529',
+                       fieldbackground='#ffffff',
+                       borderwidth=1,
+                       relief='solid')
+        style.configure('Masiva.Treeview.Heading', 
+                       background='#f8f9fa',
+                       foreground='#495057',
+                       font=('Segoe UI', 9, 'bold'),
+                       borderwidth=1,
+                       relief='solid')
+        # Evitar selección visual en azul
+        style.map('Masiva.Treeview', 
+                 background=[('selected', '#ffffff')],
+                 foreground=[('selected', '#212529')])
+        
+        # TreeView masiva
+        self.tree_masiva = ttk.Treeview(tree_frame_masiva, 
+                                       yscrollcommand=scrollbar_y_masiva.set,
+                                       xscrollcommand=scrollbar_x_masiva.set,
+                                       selectmode="none", height=12, style='Masiva.Treeview')
+        
+        # Configurar scrollbars
+        scrollbar_y_masiva.config(command=self.tree_masiva.yview)
+        scrollbar_x_masiva.config(command=self.tree_masiva.xview)
+        
+        # Las columnas se configurarán dinámicamente al cargar CSV
+        self.tree_masiva['show'] = 'headings'
+        
+        # Empaquetar TreeView y scrollbars
+        self.tree_masiva.grid(row=0, column=0, sticky="nsew")
+        scrollbar_y_masiva.grid(row=0, column=1, sticky="ns")
+        scrollbar_x_masiva.grid(row=1, column=0, sticky="ew")
+        
+        # Configurar grid weights
+        tree_frame_masiva.grid_rowconfigure(0, weight=1)
+        tree_frame_masiva.grid_columnconfigure(0, weight=1)
+        
+        # Eventos para selección en TreeView masiva
+        self.tree_masiva.bind('<Button-1>', self.on_treeview_masiva_click)
+        self.tree_masiva.bind('<Double-1>', self.on_treeview_masiva_double_click)
+        self.tree_masiva.bind('<Button-3>', self.on_treeview_masiva_right_click)
+        
+        # Menú contextual para TreeView masiva
+        self.menu_contextual_masiva = tk.Menu(self.tree_masiva, tearoff=0)
+        self.menu_contextual_masiva.add_command(label="Marcar como OK (Verde)", 
+                                               command=lambda: self.menu_marcar_estado_masiva('verde'))
+        self.menu_contextual_masiva.add_command(label="Marcar como Sin imágenes (Amarillo)", 
+                                               command=lambda: self.menu_marcar_estado_masiva('amarillo'))
+        self.menu_contextual_masiva.add_command(label="Marcar como Error (Rojo)", 
+                                               command=lambda: self.menu_marcar_estado_masiva('rojo'))
+        self.menu_contextual_masiva.add_command(label="Quitar marca", 
+                                               command=lambda: self.menu_marcar_estado_masiva('normal'))
+        
+        # Frame de acciones
+        actions_frame3 = tk.LabelFrame(self.tab3, text="Acciones de Generación Masiva",
+                                      font=('Segoe UI', 10, 'bold'), fg="#495057", bg="#ffffff",
+                                      relief="solid", bd=1)
+        actions_frame3.pack(fill="x", padx=20, pady=10)
+        
+        actions_controls3 = tk.Frame(actions_frame3, bg="#ffffff")
+        actions_controls3.pack(fill="x", padx=15, pady=15)
+        
+        # Botón de reiniciar historial en pestaña masiva
+        self.btn_reiniciar_historial_masiva = tk.Button(actions_controls3, text="🔄 Reiniciar Historial", 
+                                                       command=self.reiniciar_historial_masiva,
+                                                       font=('Segoe UI', 9, 'bold'), fg="#ffffff", bg="#dc3545",
+                                                       relief="flat", padx=20, pady=8, cursor="hand2")
+        self.btn_reiniciar_historial_masiva.pack(side="left", padx=(0, 10))
+        
+        self.btn_generar_masivo = tk.Button(actions_controls3, text="🚀 Generar Páginas Masivamente",
+                                           command=self.generar_masivo,
+                                           font=('Segoe UI', 11, 'bold'), fg="#ffffff", bg="#dc3545",
+                                           relief="flat", padx=30, pady=10, cursor="hand2")
+        self.btn_generar_masivo.pack(side="left")
+        
+        # Variables para generación masiva
+        self.productos_seleccionados_masiva = set()
+        
+        # Configurar efectos hover para botones (al final, después de crear todos los botones)
+        self._setup_button_hover_effects()
     
     def _setup_button_hover_effects(self):
         """Configura efectos hover para los botones"""
         buttons_config = [
             (self.btn_cargar, "#007bff", "#0056b3"),
             (self.btn_reiniciar_historial, "#dc3545", "#c82333"),
+            (self.btn_reiniciar_historial_masiva, "#dc3545", "#c82333"),
             (self.btn_buscar_plantilla_ind, "#f8f9fa", "#e9ecef"),
             (self.btn_pagina_individual, "#28a745", "#1e7e34"),
             (self.btn_buscar_catalogo, "#f8f9fa", "#e9ecef"),
@@ -592,6 +792,627 @@ class GeneradorCatalogoApp:
         finally:
             self.root.destroy()
     
+    # --- Métodos para Generación Masiva ---
+    
+    def buscar_plantilla_masiva(self):
+        """Busca archivo de plantilla HTML para generación masiva"""
+        filename = filedialog.askopenfilename(
+            title="Seleccionar plantilla HTML",
+            filetypes=[("Archivos HTML", "*.html"), ("Todos los archivos", "*.*")]
+        )
+        if filename:
+            self.plantilla_masiva_path.set(filename)
+    
+    def buscar_directorio_salida(self):
+        """Busca directorio de salida para las páginas generadas"""
+        directory = filedialog.askdirectory(title="Seleccionar directorio de salida")
+        if directory:
+            self.directorio_salida.set(directory)
+    
+    def seleccionar_todos_masiva(self):
+        """Selecciona todos los productos para generación masiva"""
+        if not hasattr(self, 'tree_masiva') or not self.tree_masiva.get_children():
+            messagebox.showwarning("Advertencia", "Primero debe cargar un archivo CSV.")
+            return
+        
+        self.productos_seleccionados_masiva.clear()
+        for item in self.tree_masiva.get_children():
+            self.productos_seleccionados_masiva.add(item)
+            self.tree_masiva.set(item, 'sel', '☑')
+        
+        self.tree_masiva.update_idletasks()  # Forzar actualización visual
+        self.actualizar_contador_seleccionados()
+    
+    def deseleccionar_todos_masiva(self):
+        """Deselecciona todos los productos"""
+        if hasattr(self, 'tree_masiva'):
+            for item in self.tree_masiva.get_children():
+                self.tree_masiva.set(item, 'sel', '☐')
+        
+        self.productos_seleccionados_masiva.clear()
+        if hasattr(self, 'tree_masiva'):
+            self.tree_masiva.update_idletasks()  # Forzar actualización visual
+        self.actualizar_contador_seleccionados()
+    
+    def seleccionar_marcados_masiva(self):
+        """Selecciona solo los productos marcados en verde"""
+        if not hasattr(self, 'tree_masiva') or not self.tree_masiva.get_children():
+            messagebox.showwarning("Advertencia", "Primero debe cargar un archivo CSV.")
+            return
+        
+        self.productos_seleccionados_masiva.clear()
+        # Primero deseleccionar todos
+        for item in self.tree_masiva.get_children():
+            self.tree_masiva.set(item, 'sel', '☐')
+        
+        # Luego seleccionar solo los verdes
+        for item in self.tree_masiva.get_children():
+            tags = self.tree_masiva.item(item, 'tags')
+            if 'verde' in tags:
+                self.productos_seleccionados_masiva.add(item)
+                self.tree_masiva.set(item, 'sel', '☑')
+        
+        self.tree_masiva.update_idletasks()  # Forzar actualización visual
+        self.actualizar_contador_seleccionados()
+    
+    def actualizar_contador_seleccionados(self):
+        """Actualiza el contador de productos seleccionados"""
+        count = len(self.productos_seleccionados_masiva)
+        self.lbl_seleccionados.config(text=f"Seleccionados: {count}")
+    
+    def generar_masivo(self):
+        """Genera páginas de productos de forma masiva"""
+        # Validaciones
+        if not self.plantilla_masiva_path.get():
+            messagebox.showerror("Error", "Debe seleccionar una plantilla HTML.")
+            return
+        
+        if not self.directorio_salida.get():
+            messagebox.showerror("Error", "Debe seleccionar un directorio de salida.")
+            return
+        
+        if not self.productos_seleccionados_masiva:
+            messagebox.showerror("Error", "Debe seleccionar al menos un producto.")
+            return
+        
+        if not os.path.exists(self.plantilla_masiva_path.get()):
+            messagebox.showerror("Error", "El archivo de plantilla no existe.")
+            return
+        
+        if not os.path.exists(self.directorio_salida.get()):
+            messagebox.showerror("Error", "El directorio de salida no existe.")
+            return
+        
+        # Confirmar generación
+        count = len(self.productos_seleccionados_masiva)
+        respuesta = messagebox.askyesno(
+            "Confirmar Generación Masiva",
+            f"¿Está seguro de generar {count} páginas de productos?\n\n"
+            f"Plantilla: {os.path.basename(self.plantilla_masiva_path.get())}\n"
+            f"Directorio: {self.directorio_salida.get()}"
+        )
+        
+        if not respuesta:
+            return
+        
+        # Ejecutar generación en hilo separado
+        self.executor.submit(self._generar_masivo_async)
+    
+    def _generar_masivo_async(self):
+        """Ejecuta la generación masiva en segundo plano"""
+        try:
+            self.progress_var_masiva.set("Iniciando generación masiva...")
+            
+            # Cargar plantilla
+            with open(self.plantilla_masiva_path.get(), 'r', encoding='utf-8') as f:
+                plantilla_content = f.read()
+            
+            total_productos = len(self.productos_seleccionados_masiva)
+            productos_generados = 0
+            productos_fallidos = 0
+            
+            for i, item_id in enumerate(self.productos_seleccionados_masiva, 1):
+                try:
+                    # Marcar como procesando
+                    self.set_estado_fila_masiva(item_id, 'procesando')
+                    
+                    # Actualizar progreso
+                    self.progress_var_masiva.set(f"Generando página {i}/{total_productos}...")
+                    
+                    # Obtener datos del producto
+                    values = self.tree_masiva.item(item_id, 'values')
+                    if not values:
+                        continue
+                    
+                    # Crear diccionario de datos del producto
+                    # Estructura TreeView masivo: ['sel', '_numero', '_checked'] + campos_csv
+                    # Los datos CSV empiezan en índice 3
+                    
+                    # Crear mapeo dinámico basado en los campos CSV
+                    def get_value_by_column_name(column_name):
+                        try:
+                            if column_name in self.campos_csv:
+                                csv_index = self.campos_csv.index(column_name)
+                                values_index = csv_index + 3  # +3 por ['sel', '_numero', '_checked']
+                                return values[values_index] if len(values) > values_index else ''
+                            return ''
+                        except (ValueError, IndexError):
+                            return ''
+                    
+                    producto_data = {
+                        'tipo': get_value_by_column_name('Etiquetas'),
+                        'sku': get_value_by_column_name('SKU'),
+                        'nombre': get_value_by_column_name('SKU'),  # SKU como nombre
+                        'precio_normal': get_value_by_column_name('Precio normal'),
+                        'porcentaje_descuento': get_value_by_column_name('Porcentajede descuento'),
+                        'precio_descuento': get_value_by_column_name('precio con descuento'),
+                        'marca': get_value_by_column_name('Valor(es) del atributo 2'),  # Marca
+                        'descripcion': get_value_by_column_name('Tipo'),  # Tipo como descripción
+                        'imagen1': get_value_by_column_name('IMAGEN 1'),
+                        'imagen2': get_value_by_column_name('IMAGEN 2'),
+                        'imagen3': get_value_by_column_name('IMAGEN 3'),
+                        'logo': '',
+                        # Información adicional para la tabla
+                        'color': get_value_by_column_name('Valor(es) del atributo 4'),  # Color
+                        'forma': get_value_by_column_name('Valor(es) del atributo 5'),  # Forma
+                        'material': get_value_by_column_name('Valor(es) del atributo 6'),  # Material
+                        'varillas': get_value_by_column_name('Valor(es) del atributo 7'),  # Varillas
+                        'clip': get_value_by_column_name('Valor(es) del atributo 8'),  # Clip
+                        'color_mica': get_value_by_column_name('Valor(es) del atributo 9'),  # Color de Mica
+                        'medida': get_value_by_column_name('Valor(es) del atributo 10'),  # Medida
+                        'puente': get_value_by_column_name('Valor(es) del atributo 11'),  # Puente
+                        'accesorios': get_value_by_column_name('Valor(es) del atributo 12'),  # Accesorios
+                        'garantia': get_value_by_column_name('Valor(es) del atributo 13')  # Garantía
+                    }
+                    
+                    # Generar contenido HTML
+                    html_content = self._procesar_plantilla_masiva(plantilla_content, producto_data)
+                    
+                    # Crear nombre de archivo seguro
+                    nombre_archivo = self._crear_nombre_archivo_seguro(producto_data['nombre'], i)
+                    ruta_archivo = os.path.join(self.directorio_salida.get(), f"{nombre_archivo}.html")
+                    
+                    # Guardar archivo
+                    with open(ruta_archivo, 'w', encoding='utf-8') as f:
+                        f.write(html_content)
+                    
+                    # Marcar como generado exitosamente (color verde)
+                    self.set_estado_fila_masiva(item_id, 'verde')
+                    
+                    # Guardar en historial y sincronizar con TreeView individual
+                    sku = producto_data['sku']
+                    if sku:
+                        print(f"DEBUG: Guardando estado 'verde' para SKU {sku} en generación masiva")
+                        self.estado_filas[sku] = 'verde'
+                        self.guardar_historial_estado()
+                        print(f"DEBUG: Historial guardado. Estado actual: {self.estado_filas}")
+                        self.sincronizar_estado_individual(sku, 'verde')
+                    
+                    productos_generados += 1
+                    
+                except Exception as e:
+                    print(f"Error generando producto {i}: {str(e)}")
+                    
+                    # Marcar como error (color rojo) y sincronizar
+                    self.set_estado_fila_masiva(item_id, 'rojo')
+                    
+                    # Obtener SKU para sincronización
+                    try:
+                        values = self.tree_masiva.item(item_id, 'values')
+                        if values and len(values) > 4:
+                            sku = values[4]  # SKU está en índice 4 (sel, _numero, _checked, Tipo, SKU)
+                            if sku:
+                                self.estado_filas[sku] = 'rojo'
+                                self.guardar_historial_estado()
+                                self.sincronizar_estado_individual(sku, 'rojo')
+                    except Exception:
+                        pass
+                    
+                    productos_fallidos += 1
+                    continue
+            
+            # Mostrar resultado final
+            self.progress_var_masiva.set(
+                f"Completado: {productos_generados} generados, {productos_fallidos} fallidos"
+            )
+            
+            # Limpiar mensaje después de 5 segundos
+            self.root.after(5000, lambda: self.progress_var_masiva.set(""))
+            
+            # Mostrar mensaje de éxito
+            messagebox.showinfo(
+                "Generación Completada",
+                f"Generación masiva completada:\n\n"
+                f"✅ Páginas generadas: {productos_generados}\n"
+                f"❌ Páginas fallidas: {productos_fallidos}\n\n"
+                f"Directorio: {self.directorio_salida.get()}"
+            )
+            
+        except Exception as e:
+            self.progress_var_masiva.set("Error en generación masiva")
+            messagebox.showerror("Error", f"Error durante la generación masiva:\n{str(e)}")
+    
+    def _procesar_plantilla_masiva(self, plantilla_content, producto_data):
+        """Procesa la plantilla HTML con los datos del producto usando regex como en generación individual"""
+        html_content = plantilla_content
+        
+        # Obtener imágenes del producto
+        img1 = producto_data.get('imagen1', '') or ''
+        img2 = producto_data.get('imagen2', '') or ''
+        img3 = producto_data.get('imagen3', '') or ''
+        
+        # Usar patrones regex compilados para reemplazar imágenes (igual que en generación individual)
+        html_content = _REGEX_PATTERNS['img_src_1'].sub('src="' + img1 + '"', html_content)
+        html_content = _REGEX_PATTERNS['img_src_2'].sub('src="' + img2 + '"', html_content)
+        html_content = _REGEX_PATTERNS['img_src_3'].sub('src="' + img3 + '"', html_content)
+        
+        # Reemplazo en miniaturas
+        html_content = _REGEX_PATTERNS['thumb_1'].sub('src="' + img1 + '"', html_content)
+        html_content = _REGEX_PATTERNS['thumb_2'].sub('src="' + img2 + '"', html_content)
+        html_content = _REGEX_PATTERNS['thumb_3'].sub('src="' + img3 + '"', html_content)
+        
+        # Reemplazo en el script JS (array imageSources)
+        img1_js = '"' + img1 + '"'
+        img2_js = '"' + img2 + '"'
+        img3_js = '"' + img3 + '"'
+        html_content = _REGEX_PATTERNS['image_sources'].sub('const imageSources = [' + img1_js + ', ' + img2_js + ', ' + img3_js + '];', html_content)
+        
+        # Reemplazar información del producto (marca, modelo, precios)
+        sku = producto_data.get('sku', '')
+        marca = producto_data.get('marca', '')
+        precio_normal = producto_data.get('precio_normal', '')
+        precio_descuento = producto_data.get('precio_descuento', '')
+        porcentaje_descuento = producto_data.get('porcentaje_descuento', '')
+        
+        # Reemplazar marca y modelo usando regex
+        html_content = _REGEX_PATTERNS['product_brand'].sub('<h1 id="product-brand" class="text-4xl md:text-5xl font-bold text-orange-500 uppercase">' + marca + '</h1>', html_content)
+        html_content = _REGEX_PATTERNS['product_model'].sub('<p id="product-model" class="text-xl text-gray-400 mb-4">' + sku + '</p>', html_content)
+        
+        # Reemplazar precios
+        try:
+            if precio_normal and precio_descuento and porcentaje_descuento:
+                # Validar que los precios no sean SKUs o valores inválidos
+                if '$' in str(precio_normal) and '$' in str(precio_descuento):
+                    # Formatear precio normal (tachado)
+                    precio_normal_float = float(str(precio_normal).replace('$', '').replace(',', ''))
+                    precio_normal_formateado = f'${precio_normal_float:,.2f}'
+                    
+                    # Formatear precio con descuento
+                    precio_descuento_float = float(str(precio_descuento).replace('$', '').replace(',', ''))
+                    precio_descuento_formateado = f'${precio_descuento_float:,.2f}'
+                    
+                    # Formatear porcentaje de descuento
+                    porcentaje_float = float(str(porcentaje_descuento).replace('%', ''))
+                    porcentaje_formateado = f'{porcentaje_float:.0f}%'
+                    
+                    # Reemplazar precio tachado
+                    html_content = _REGEX_PATTERNS['old_price'].sub('<span class="text-2xl text-gray-400 line-through mr-2">' + precio_normal_formateado + '</span>', html_content)
+                    
+                    # Reemplazar badge de descuento
+                    html_content = _REGEX_PATTERNS['discount_badge'].sub('<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">' + porcentaje_formateado + '</span>', html_content)
+                    
+                    # Reemplazar precio actual
+                    html_content = _REGEX_PATTERNS['new_price'].sub('<span class="text-5xl font-extrabold text-black">' + precio_descuento_formateado + '</span>', html_content)
+            elif precio_normal and '$' in str(precio_normal):
+                # Solo precio normal disponible
+                precio_normal_float = float(str(precio_normal).replace('$', '').replace(',', ''))
+                precio_normal_formateado = f'${precio_normal_float:,.2f}'
+                html_content = _REGEX_PATTERNS['new_price'].sub('<span class="text-5xl font-extrabold text-black">' + precio_normal_formateado + '</span>', html_content)
+        except Exception as e:
+            print(f"Error procesando precios: {e}")
+        
+        # --- Reemplazo de tabla de especificaciones ---
+        # Usar el mismo enfoque que la función individual para consistencia
+        tabla_replacements = [
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700 w-1/3">SKU</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('sku', '')),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Marca</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('marca', '')),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Tipo</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('tipo', '')),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Color</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('color', '')),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Forma</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('forma', '')),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Material</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('material', '')),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Varillas</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('varillas', '')),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Clip</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('clip', '')),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Color de Mica</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('color_mica', '')),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Medida</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('medida', '')),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Puente</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('puente', '')),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Accesorios</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('accesorios', '')),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Garantía</td><td class="py-3 px-4 text-gray-800">[^<]*</td></tr>', producto_data.get('garantia', '')),
+            # Patrones específicos para valores hardcodeados en la plantilla
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700 w-1/3">SKU</td><td class="py-3 px-4 text-gray-800">RB2398</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700 w-1/3">SKU</td><td class="py-3 px-4 text-gray-800">{producto_data.get("sku", "")}</td></tr>'),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Marca</td><td class="py-3 px-4 text-gray-800">RAYBAN</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Marca</td><td class="py-3 px-4 text-gray-800">{producto_data.get("marca", "")}</td></tr>'),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Tipo</td><td class="py-3 px-4 text-gray-800">Lente oftálmico</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Tipo</td><td class="py-3 px-4 text-gray-800">{producto_data.get("tipo", "")}</td></tr>'),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Color</td><td class="py-3 px-4 text-gray-800">Transparente con negro</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Color</td><td class="py-3 px-4 text-gray-800">{producto_data.get("color", "")}</td></tr>'),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Forma</td><td class="py-3 px-4 text-gray-800">Ovalado</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Forma</td><td class="py-3 px-4 text-gray-800">{producto_data.get("forma", "")}</td></tr>'),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Material</td><td class="py-3 px-4 text-gray-800">Acetato</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Material</td><td class="py-3 px-4 text-gray-800">{producto_data.get("material", "")}</td></tr>'),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Varillas</td><td class="py-3 px-4 text-gray-800">Acetato</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Varillas</td><td class="py-3 px-4 text-gray-800">{producto_data.get("varillas", "")}</td></tr>'),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Clip</td><td class="py-3 px-4 text-gray-800">Sin clip</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Clip</td><td class="py-3 px-4 text-gray-800">{producto_data.get("clip", "")}</td></tr>'),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Color de Mica</td><td class="py-3 px-4 text-gray-800">Transparente</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Color de Mica</td><td class="py-3 px-4 text-gray-800">{producto_data.get("color_mica", "")}</td></tr>'),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Medida</td><td class="py-3 px-4 text-gray-800">Mediano</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Medida</td><td class="py-3 px-4 text-gray-800">{producto_data.get("medida", "")}</td></tr>'),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Puente</td><td class="py-3 px-4 text-gray-800">Puente anatómico</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Puente</td><td class="py-3 px-4 text-gray-800">{producto_data.get("puente", "")}</td></tr>'),
+            (r'<tr><td class="py-3 px-4 font-semibold text-gray-700">Accesorios</td><td class="py-3 px-4 text-gray-800">Lente, paño, estuche y líquido antirreflejante</td></tr>', f'<tr><td class="py-3 px-4 font-semibold text-gray-700">Accesorios</td><td class="py-3 px-4 text-gray-800">{producto_data.get("accesorios", "")}</td></tr>'),
+            (r'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Garantía</td><td class="py-3 px-4 text-gray-800">30 días de garantía contra defectos de fábrica.</td></tr>', f'<tr class="bg-gray-50"><td class="py-3 px-4 font-semibold text-gray-700">Garantía</td><td class="py-3 px-4 text-gray-800">{producto_data.get("garantia", "")}</td></tr>'),
+        ]
+        
+        for patron, valor in tabla_replacements:
+            # Para patrones con [^<]*, usar lambda function
+            if '[^<]*' in patron:
+                html_content = re.sub(patron, lambda m, v=valor: m.group(0).replace('[^<]*', v), html_content)
+            else:
+                # Para patrones específicos con valores hardcodeados, usar reemplazo directo
+                html_content = re.sub(patron, valor, html_content)
+        
+        return html_content
+    
+    def _crear_nombre_archivo_seguro(self, nombre_producto, indice):
+        """Crea un nombre de archivo seguro basado en el nombre del producto"""
+        if not nombre_producto:
+            return f"producto_{indice}"
+        
+        # Limpiar caracteres no válidos para nombres de archivo
+        nombre_limpio = re.sub(r'[<>:"/\\|?*]', '_', nombre_producto)
+        nombre_limpio = re.sub(r'\s+', '_', nombre_limpio.strip())
+        nombre_limpio = nombre_limpio[:50]  # Limitar longitud
+        
+        if not nombre_limpio:
+            return f"producto_{indice}"
+        
+        return f"{nombre_limpio}_{indice}"
+    
+    def on_treeview_masiva_click(self, event):
+        """Maneja clics en el TreeView de generación masiva"""
+        # Detectar si se hizo click en la columna de checkbox
+        region = self.tree_masiva.identify("region", event.x, event.y)
+        if region != "cell":
+            return
+        col = self.tree_masiva.identify_column(event.x)
+        if col != "#1":  # La columna 'sel' es la primera
+            return
+        rowid = self.tree_masiva.identify_row(event.y)
+        if not rowid:
+            return
+        
+        # Alternar selección solo si se hizo click en el checkbox
+        if rowid in self.productos_seleccionados_masiva:
+            self.productos_seleccionados_masiva.remove(rowid)
+            self.tree_masiva.set(rowid, 'sel', '☐')
+        else:
+            self.productos_seleccionados_masiva.add(rowid)
+            self.tree_masiva.set(rowid, 'sel', '☑')
+        
+        self.actualizar_contador_seleccionados()
+    
+    def on_treeview_masiva_double_click(self, event):
+        """Maneja doble clic en el TreeView de generación masiva"""
+        # Mismo comportamiento que clic simple
+        self.on_treeview_masiva_click(event)
+    
+    def on_treeview_masiva_right_click(self, event):
+        """Maneja clic derecho en el TreeView de generación masiva"""
+        rowid = self.tree_masiva.identify_row(event.y)
+        if not rowid:
+            return
+        # No establecer selección para evitar resaltado en azul
+        self.menu_contextual_masiva.post(event.x_root, event.y_root)
+        self._menu_contextual_masiva_rowid = rowid
+    
+    def menu_marcar_estado_masiva(self, estado):
+        """Marca el estado de una fila en el TreeView masiva"""
+        rowid = getattr(self, '_menu_contextual_masiva_rowid', None)
+        if not rowid:
+            return
+        self.set_estado_fila_masiva(rowid, estado)
+        # Usar SKU como clave del historial
+        values = self.tree_masiva.item(rowid, 'values')
+        if values and len(values) > 4:  # Asegurar que hay SKU (índice 4 en masiva)
+            sku = values[4]  # SKU está en el índice 4 (sel, _numero, _checked, Tipo, SKU)
+            self.estado_filas[sku] = estado
+            self.guardar_historial_estado()
+            # Sincronizar con TreeView individual
+            self.sincronizar_estado_individual(sku, estado)
+    
+    def reiniciar_historial_masiva(self):
+        """Reinicia el historial de estados en la pestaña masiva"""
+        respuesta = messagebox.askyesno("Confirmar", 
+                                       "¿Estás seguro de que quieres reiniciar el historial?\n\n"
+                                       "Esto eliminará todos los estados guardados (verde, amarillo, rojo) "
+                                       "y restablecerá todas las filas a su estado normal.")
+        if respuesta:
+            # Limpiar el diccionario de estados
+            self.estado_filas = {}
+            
+            # Eliminar el archivo de historial
+            try:
+                if os.path.exists(self.historial_estado_path):
+                    os.remove(self.historial_estado_path)
+            except Exception:
+                pass
+            
+            # Restablecer estados visuales en ambos TreeViews
+            if self.tree:
+                for item in self.tree.get_children():
+                    self.set_estado_fila(item, 'normal')
+                    self.checked_rows[item] = False
+            
+            if self.tree_masiva:
+                for item in self.tree_masiva.get_children():
+                    self.set_estado_fila_masiva(item, 'normal')
+            
+            messagebox.showinfo("Éxito", "Historial reiniciado correctamente.")
+    
+    def set_estado_fila_masiva(self, rowid, estado):
+        """Establece el estado visual de una fila en el TreeView masiva"""
+        if not self.tree_masiva:
+            return
+            
+        # Quitar todos los tags
+        self.tree_masiva.item(rowid, tags=())
+        
+        if estado == 'verde':
+            self.tree_masiva.item(rowid, tags=("verde",))
+            self.tree_masiva.tag_configure("verde", background="#d4edda", foreground="#155724")  # Verde éxito
+        elif estado == 'amarillo':
+            self.tree_masiva.item(rowid, tags=("amarillo",))
+            self.tree_masiva.tag_configure("amarillo", background="#fff3cd", foreground="#856404")  # Amarillo advertencia
+        elif estado == 'rojo':
+            self.tree_masiva.item(rowid, tags=("rojo",))
+            self.tree_masiva.tag_configure("rojo", background="#f8d7da", foreground="#721c24")  # Rojo error
+        elif estado == 'procesando':
+            self.tree_masiva.item(rowid, tags=("procesando",))
+            self.tree_masiva.tag_configure("procesando", background="#e2e3e5", foreground="#383d41")  # Gris procesando
+        else:
+            # Normal - sin color de fondo especial
+            pass
+        
+        # Forzar actualización visual
+        self.tree_masiva.update_idletasks()
+    
+    def configurar_columnas_masiva(self):
+        """Configura las columnas del TreeView masiva basándose en los campos CSV"""
+        if not hasattr(self, 'campos_csv'):
+            return
+        
+        # Configurar columnas: sel + número + checkbox + campos CSV
+        cols = ['sel', '_numero', '_checked'] + self.campos_csv
+        self.tree_masiva['columns'] = cols
+        
+        # Configurar encabezados
+        self.tree_masiva.heading('sel', text='Sel', anchor='center')
+        self.tree_masiva.heading('_numero', text='#', anchor='center')
+        self.tree_masiva.heading('_checked', text='✔', anchor='center')
+        
+        # Configurar anchos
+        self.tree_masiva.column('sel', width=40, anchor='center', stretch=False)
+        self.tree_masiva.column('_numero', width=50, anchor='center', stretch=False)
+        self.tree_masiva.column('_checked', width=40, anchor='center', stretch=False)
+        
+        # Configurar campos CSV con los mismos anchos que el TreeView principal
+        col_widths = {
+            "Tipo": 90,
+            "SKU": 100,
+            "¿Existencias?": 80,
+            "Inventario": 80,
+            "Precio normal": 110,
+            "Porcentajede descuento": 90,
+            "precio con descuento": 120,
+            "Categorías": 90,
+            "Etiquetas": 120,
+            "Valor(es) del atributo 1": 100,
+            "Valor(es) del atributo 2": 100,
+            "Valor(es) del atributo 3": 120,
+            "Valor(es) del atributo 4": 120,
+            "Valor(es) del atributo 5": 120,
+            "Valor(es) del atributo 6": 120,
+            "Valor(es) del atributo 7": 120,
+            "Valor(es) del atributo 8": 120,
+            "Valor(es) del atributo 9": 120,
+            "Valor(es) del atributo 10": 120,
+            "Valor(es) del atributo 11": 120,
+            "Valor(es) del atributo 12": 120,
+            "Valor(es) del atributo 13": 180,
+            "IMAGEN 1": 180,
+            "IMAGEN 2": 180,
+            "IMAGEN 3": 180,
+        }
+        
+        for col in self.campos_csv:
+            self.tree_masiva.heading(col, text=col)
+            width = col_widths.get(col, 100)
+            self.tree_masiva.column(col, width=width, anchor='center', stretch=False)
+    
+    def sincronizar_datos_masiva(self):
+        """Sincroniza los datos del TreeView principal con el TreeView masiva"""
+        if not hasattr(self, 'tree') or not hasattr(self, 'tree_masiva'):
+            return
+        
+        # Configurar columnas primero
+        self.configurar_columnas_masiva()
+        
+        # Limpiar TreeView masiva
+        for item in self.tree_masiva.get_children():
+            self.tree_masiva.delete(item)
+        
+        # Limpiar selecciones
+        self.productos_seleccionados_masiva.clear()
+        
+        # Copiar datos del TreeView principal
+        for item in self.tree.get_children():
+            values = self.tree.item(item, 'values')
+            tags = self.tree.item(item, 'tags')
+            if values:
+                # Insertar en TreeView masiva: sel + valores originales
+                new_values = ('☐',) + values
+                new_item = self.tree_masiva.insert('', 'end', values=new_values, tags=tags)
+                
+                # Restaurar estado del historial si existe (usar SKU como clave)
+                if len(values) > 3:  # Asegurar que hay SKU
+                    sku = values[3]  # SKU está en el índice 3 en el TreeView principal (_numero, _checked, Tipo, SKU)
+                    if sku in self.estado_filas:
+                        estado = self.estado_filas[sku]
+                        self.set_estado_fila_masiva(new_item, estado)
+        
+        self.actualizar_contador_seleccionados()
+
+    def sincronizar_estado_individual(self, sku, estado):
+        """Sincroniza el estado desde TreeView masivo hacia TreeView individual"""
+        if not hasattr(self, 'tree') or not self.tree:
+            return
+        
+        # Buscar la fila correspondiente en TreeView individual por SKU
+        for item in self.tree.get_children():
+            values = self.tree.item(item, 'values')
+            if values and len(values) > 3 and values[3] == sku:  # SKU está en índice 3
+                self.set_estado_fila(item, estado)
+                break
+    
+    def sincronizar_estado_masivo(self, sku, estado):
+        """Sincroniza el estado desde TreeView individual hacia TreeView masivo"""
+        if not hasattr(self, 'tree_masiva') or not self.tree_masiva:
+            return
+        
+        # Buscar la fila correspondiente en TreeView masivo por SKU
+        for item in self.tree_masiva.get_children():
+            values = self.tree_masiva.item(item, 'values')
+            if values and len(values) > 4 and values[4] == sku:  # SKU está en índice 4 (sel, _numero, _checked, Tipo, SKU)
+                self.set_estado_fila_masiva(item, estado)
+                break
+    
+    def forzar_sincronizacion_completa(self):
+        """Fuerza la sincronización completa del historial en ambos TreeViews"""
+        print("DEBUG: Iniciando sincronización completa...")
+        print(f"DEBUG: Estados en historial: {self.estado_filas}")
+        
+        # Aplicar estados del historial al TreeView individual
+        if hasattr(self, 'tree') and self.tree:
+            print("DEBUG: Revisando TreeView individual...")
+            for item in self.tree.get_children():
+                values = self.tree.item(item, 'values')
+                if values and len(values) > 3:
+                    sku = values[3]  # SKU está en índice 3 (_numero, _checked, Tipo, SKU)
+                    print(f"DEBUG: Encontrado SKU '{sku}' en TreeView individual")
+                    if sku in self.estado_filas:
+                        estado = self.estado_filas[sku]
+                        print(f"DEBUG: Aplicando estado {estado} a SKU {sku} en TreeView individual")
+                        self.set_estado_fila(item, estado)
+                    else:
+                        print(f"DEBUG: SKU '{sku}' no encontrado en historial")
+        
+        # Aplicar estados del historial al TreeView masivo
+        if hasattr(self, 'tree_masiva') and self.tree_masiva:
+            print("DEBUG: Revisando TreeView masivo...")
+            for item in self.tree_masiva.get_children():
+                values = self.tree_masiva.item(item, 'values')
+                if values and len(values) > 3:  # En masivo, SKU está en índice 3 (después de checkbox)
+                    sku = values[3]  # SKU está en índice 3
+                    print(f"DEBUG: Encontrado SKU '{sku}' en TreeView masivo")
+                    if sku in self.estado_filas:
+                        estado = self.estado_filas[sku]
+                        print(f"DEBUG: Aplicando estado {estado} a SKU {sku} en TreeView masivo")
+                        self.set_estado_fila_masiva(item, estado)
+                    else:
+                        print(f"DEBUG: SKU '{sku}' no encontrado en historial")
+        
+        print("DEBUG: Sincronización completa finalizada")
+
     def reiniciar_historial(self):
         """Reinicia el historial de estados de productos"""
         respuesta = messagebox.askyesno("Confirmar", 
@@ -609,11 +1430,15 @@ class GeneradorCatalogoApp:
             except Exception:
                 pass
             
-            # Restablecer estados visuales en el TreeView si existe
+            # Restablecer estados visuales en ambos TreeViews
             if self.tree:
                 for item in self.tree.get_children():
                     self.set_estado_fila(item, 'normal')
                     self.checked_rows[item] = False
+            
+            if self.tree_masiva:
+                for item in self.tree_masiva.get_children():
+                    self.set_estado_fila_masiva(item, 'normal')
             
             messagebox.showinfo("Éxito", "Historial reiniciado correctamente.")
 
@@ -671,6 +1496,13 @@ class GeneradorCatalogoApp:
                 self.df = pd.read_excel(path)
             else:
                 self.df = pd.read_csv(path)
+            
+            # Limpiar datos: remover filas completamente vacías
+            self.df = self.df.dropna(how='all')
+            
+            # Resetear índices después de limpiar
+            self.df = self.df.reset_index(drop=True)
+            
             self.campos_csv = list(self.df.columns)
             
             # Actualizar progreso
@@ -705,7 +1537,8 @@ class GeneradorCatalogoApp:
         # --- Agregar columna de numeración y checkbox al inicio ---
         cols = ["_numero", "_checked"] + self.campos_csv
         self.tree = ttk.Treeview(self.tree_frame, columns=cols, show="headings", 
-                                height=10, xscrollcommand=self.xscroll.set, style='Modern.Treeview')
+                                height=10, yscrollcommand=self.yscroll.set, 
+                                xscrollcommand=self.xscroll.set, style='Modern.Treeview')
         self.tree.heading("_numero", text="#", anchor="center")
         self.tree.column("_numero", width=50, anchor="center", stretch=False)
         self.tree.heading("_checked", text="✔", anchor="center")
@@ -742,10 +1575,18 @@ class GeneradorCatalogoApp:
             self.tree.heading(col, text=col)
             width = col_widths.get(col, 100)
             self.tree.column(col, width=width, anchor="center", stretch=False)
-        self.tree.pack(fill="both", expand=True)
+        
+        # Configurar scrollbars
+        self.yscroll.config(command=self.tree.yview)
+        self.xscroll.config(command=self.tree.xview)
+        
+        # Empaquetar TreeView y scrollbars usando grid
+        self.tree.grid(row=0, column=0, sticky="nsew")
+        self.yscroll.grid(row=0, column=1, sticky="ns")
+        self.xscroll.grid(row=1, column=0, sticky="ew")
+        
         self.tree.bind("<<TreeviewSelect>>", self.on_select_producto)
         self.tree.bind("<Button-1>", self.on_treeview_click)
-        self.xscroll.config(command=self.tree.xview)
         self.tree.delete(*self.tree.get_children())
         self.checked_rows = {}
         
@@ -766,16 +1607,39 @@ class GeneradorCatalogoApp:
                 row = self.df.iloc[idx]
                 iid = str(idx)
                 self.checked_rows[iid] = False
-                values = [str(idx + 1), "", *[row.get(col, "") for col in self.campos_csv]]
+                
+                # Manejar valores NaN y nulos correctamente
+                csv_values = []
+                for col in self.campos_csv:
+                    value = row.get(col, "")
+                    # Convertir NaN, None y valores nulos a string vacío
+                    if pd.isna(value) or value is None:
+                        csv_values.append("")
+                    else:
+                        csv_values.append(str(value))
+                
+                values = [str(idx + 1), "", *csv_values]
                 self.tree.insert("", "end", iid=iid, values=values)
         
         # Restaurar colores/estados desde historial
         self.progress_var.set("Restaurando estados...")
         self.root.update_idletasks()
         
-        for rowid, estado in self.estado_filas.items():
-            self.set_estado_fila(rowid, estado)
+        # Buscar rowid correcto basado en SKU
+        for sku, estado in self.estado_filas.items():
+            for item in self.tree.get_children():
+                values = self.tree.item(item, 'values')
+                if values and len(values) > 3 and values[3] == sku:  # SKU está en índice 3
+                    self.set_estado_fila(item, estado)
+                    break
             
+        # Sincronizar datos con pestaña masiva
+        self.sincronizar_datos_masiva()
+        
+        # Forzar sincronización del historial después de cargar CSV
+        print(f"DEBUG: Estado filas después de cargar CSV: {self.estado_filas}")
+        self.forzar_sincronizacion_completa()
+        
         # Limpiar indicador de progreso
         self.progress_var.set("")
         messagebox.showinfo("Éxito", f"Archivo CSV cargado: {total_rows} productos")
@@ -827,8 +1691,14 @@ class GeneradorCatalogoApp:
         if not rowid:
             return
         self.set_estado_fila(rowid, estado)
-        self.estado_filas[rowid] = estado
-        self.guardar_historial_estado()
+        # Usar SKU como clave del historial
+        values = self.tree.item(rowid, 'values')
+        if values and len(values) > 3:  # Asegurar que hay SKU
+            sku = values[3]  # SKU está en el índice 3
+            self.estado_filas[sku] = estado
+            self.guardar_historial_estado()
+            # Sincronizar con TreeView masivo
+            self.sincronizar_estado_masivo(sku, estado)
 
     def set_estado_fila(self, rowid, estado):
         # Quitar todos los tags
@@ -872,12 +1742,24 @@ class GeneradorCatalogoApp:
         # Cambiar color de fondo
         if checked:
             self.set_estado_fila(rowid, 'verde')
-            self.estado_filas[rowid] = 'verde'
-            self.guardar_historial_estado()
+            # Usar SKU como clave del historial para sincronización
+            values = self.tree.item(rowid, 'values')
+            if values and len(values) > 3:
+                sku = values[3]  # SKU está en índice 3
+                self.estado_filas[sku] = 'verde'
+                self.guardar_historial_estado()
+                # Sincronizar con TreeView masivo
+                self.sincronizar_estado_masivo(sku, 'verde')
         else:
             self.set_estado_fila(rowid, 'normal')
-            self.estado_filas[rowid] = 'normal'
-            self.guardar_historial_estado()
+            # Usar SKU como clave del historial para sincronización
+            values = self.tree.item(rowid, 'values')
+            if values and len(values) > 3:
+                sku = values[3]  # SKU está en índice 3
+                self.estado_filas[sku] = 'normal'
+                self.guardar_historial_estado()
+                # Sincronizar con TreeView masivo
+                self.sincronizar_estado_masivo(sku, 'normal')
 
     def cargar_plantilla_tarjeta_catalogo(self):
         # Busca la primera tarjeta en el catálogo y la usa como plantilla
