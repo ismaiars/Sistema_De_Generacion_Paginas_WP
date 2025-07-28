@@ -186,13 +186,18 @@ class GeneradorCatalogoApp:
         csv_controls = tk.Frame(csv_frame, bg="#ffffff")
         csv_controls.pack(fill="x", padx=15, pady=15)
         
-        # Fila 1: Cargar CSV
+        # Fila 1: Cargar CSV y Reiniciar Historial
         csv_row1 = tk.Frame(csv_controls, bg="#ffffff")
         csv_row1.pack(fill="x", pady=(0, 10))
         self.btn_cargar = tk.Button(csv_row1, text="📁 Cargar CSV", command=self.cargar_csv,
                                    font=('Segoe UI', 9, 'bold'), fg="#ffffff", bg="#007bff",
                                    relief="flat", padx=20, pady=8, cursor="hand2")
         self.btn_cargar.pack(side="left")
+        
+        self.btn_reiniciar_historial = tk.Button(csv_row1, text="🔄 Reiniciar Historial", command=self.reiniciar_historial,
+                                                 font=('Segoe UI', 9, 'bold'), fg="#ffffff", bg="#dc3545",
+                                                 relief="flat", padx=20, pady=8, cursor="hand2")
+        self.btn_reiniciar_historial.pack(side="left", padx=(10, 0))
         
         # Fila 2: Plantilla
         csv_row2 = tk.Frame(csv_controls, bg="#ffffff")
@@ -447,6 +452,7 @@ class GeneradorCatalogoApp:
         """Configura efectos hover para los botones"""
         buttons_config = [
             (self.btn_cargar, "#007bff", "#0056b3"),
+            (self.btn_reiniciar_historial, "#dc3545", "#c82333"),
             (self.btn_buscar_plantilla_ind, "#f8f9fa", "#e9ecef"),
             (self.btn_pagina_individual, "#28a745", "#1e7e34"),
             (self.btn_buscar_catalogo, "#f8f9fa", "#e9ecef"),
@@ -484,6 +490,31 @@ class GeneradorCatalogoApp:
                 json.dump(self.estado_filas, f)
         except Exception:
             pass
+    
+    def reiniciar_historial(self):
+        """Reinicia el historial de estados de productos"""
+        respuesta = messagebox.askyesno("Confirmar", 
+                                       "¿Estás seguro de que quieres reiniciar el historial?\n\n"
+                                       "Esto eliminará todos los estados guardados (verde, amarillo, rojo) "
+                                       "y restablecerá todas las filas a su estado normal.")
+        if respuesta:
+            # Limpiar el diccionario de estados
+            self.estado_filas = {}
+            
+            # Eliminar el archivo de historial
+            try:
+                if os.path.exists(self.historial_estado_path):
+                    os.remove(self.historial_estado_path)
+            except Exception:
+                pass
+            
+            # Restablecer estados visuales en el TreeView si existe
+            if self.tree:
+                for item in self.tree.get_children():
+                    self.set_estado_fila(item, 'normal')
+                    self.checked_rows[item] = False
+            
+            messagebox.showinfo("Éxito", "Historial reiniciado correctamente.")
 
     def buscar_plantilla_ind(self):
         path = filedialog.askopenfilename(filetypes=[("HTML Files", "*.html")])
@@ -550,10 +581,12 @@ class GeneradorCatalogoApp:
                  background=[('selected', '#007bff')],
                  foreground=[('selected', '#ffffff')])
         
-        # --- Agregar columna de checkbox al inicio ---
-        cols = ["_checked"] + self.campos_csv
+        # --- Agregar columna de numeración y checkbox al inicio ---
+        cols = ["_numero", "_checked"] + self.campos_csv
         self.tree = ttk.Treeview(self.tree_frame, columns=cols, show="headings", 
                                 height=10, xscrollcommand=self.xscroll.set, style='Modern.Treeview')
+        self.tree.heading("_numero", text="#", anchor="center")
+        self.tree.column("_numero", width=50, anchor="center", stretch=False)
         self.tree.heading("_checked", text="✔", anchor="center")
         self.tree.column("_checked", width=40, anchor="center", stretch=False)
         # Definir anchos fijos para columnas clave
@@ -597,7 +630,7 @@ class GeneradorCatalogoApp:
         for idx, (_, row) in enumerate(self.df.iterrows()):
             iid = str(idx)
             self.checked_rows[iid] = False
-            values = ["", *[row.get(col, "") for col in self.campos_csv]]
+            values = [str(idx + 1), "", *[row.get(col, "") for col in self.campos_csv]]
             self.tree.insert("", "end", iid=iid, values=values)
         # Restaurar colores/estados desde historial
         for rowid, estado in self.estado_filas.items():
@@ -616,7 +649,7 @@ class GeneradorCatalogoApp:
         if region != "cell":
             return
         col = self.tree.identify_column(event.x)
-        if col != "#1":
+        if col != "#2":  # Ahora la columna de checkbox es la segunda
             return
         rowid = self.tree.identify_row(event.y)
         if not rowid:
@@ -649,27 +682,27 @@ class GeneradorCatalogoApp:
             self.tree.tag_configure("checked", background="#c8f7c5")  # Verde claro
             # Marcar checkbox visualmente
             vals = list(self.tree.item(rowid, "values"))
-            vals[0] = "✔"
+            vals[1] = "✔"  # Ahora el checkbox está en el índice 1
             self.tree.item(rowid, values=vals)
             self.checked_rows[rowid] = True
         elif estado == 'amarillo':
             self.tree.item(rowid, tags=("amarillo",))
             self.tree.tag_configure("amarillo", background="#fff9c4")  # Amarillo claro
             vals = list(self.tree.item(rowid, "values"))
-            vals[0] = ""
+            vals[1] = ""  # Ahora el checkbox está en el índice 1
             self.tree.item(rowid, values=vals)
             self.checked_rows[rowid] = False
         elif estado == 'rojo':
             self.tree.item(rowid, tags=("rojo",))
             self.tree.tag_configure("rojo", background="#ffcdd2")  # Rojo claro
             vals = list(self.tree.item(rowid, "values"))
-            vals[0] = ""
+            vals[1] = ""  # Ahora el checkbox está en el índice 1
             self.tree.item(rowid, values=vals)
             self.checked_rows[rowid] = False
         else:
             # Normal
             vals = list(self.tree.item(rowid, "values"))
-            vals[0] = ""
+            vals[1] = ""  # Ahora el checkbox está en el índice 1
             self.tree.item(rowid, values=vals)
             self.checked_rows[rowid] = False
 
