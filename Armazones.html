@@ -1,0 +1,1179 @@
+<div id="optica-shop-unique">
+    <style>
+      #optica-shop-unique {
+        font-family: 'Montserrat', sans-serif;
+        --color-primary: #FF6600;
+        --color-secondary: #005A9C;
+        --color-text: #222;
+        --color-bg-sidebar: #f9fafc;
+        --color-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      }
+      #optica-shop-unique * { box-sizing: border-box; }
+      #optica-shop-unique .shop-container {
+        display: flex; gap: 40px; padding: 50px 20px; max-width: 1400px; margin: auto; align-items: flex-start;
+      }
+      #optica-shop-unique .product-grid {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; width: 100%; background: #fff; padding: 32px;
+        border-radius: 22px; box-shadow: var(--color-shadow); min-height: 600px;
+      }
+      #optica-shop-unique .product-card {
+        display: flex; flex-direction: column; border: none; border-radius: 18px; overflow: hidden;
+        transition: box-shadow 0.3s, transform 0.3s; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        position: relative; min-height: 420px; cursor: pointer;
+      }
+      #optica-shop-unique .product-card:hover {
+        transform: translateY(-8px) scale(1.025); box-shadow: 0 12px 32px rgba(255,102,0,0.10);
+      }
+      #optica-shop-unique .product-image-container {
+        position: relative; background: #f7f8fa; aspect-ratio: 1 / 1; overflow: hidden; border-bottom: 1px solid #f0f0f0;
+        display: flex; align-items: center; justify-content: center; min-height: 220px;
+      }
+      #optica-shop-unique .product-brand-overlay {
+        position: absolute; top: 18px; right: 18px; background: rgba(255,255,255,0.7); padding: 2px 8px; border-radius: 8px;
+        z-index: 3; max-width: 60px; height: auto; opacity: 0.7; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      }
+      #optica-shop-unique .product-brand-overlay img { max-width: 60px; height: auto; display: block; }
+      #optica-shop-unique .product-card:hover .product-brand-overlay { opacity: 0.3; }
+      #optica-shop-unique .product-image-container img {
+        width: 100%; height: 100%; display: block; object-fit: cover; padding: 0; transition: filter 0.2s;
+      }
+      #optica-shop-unique .multi-image-hover .product-img {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.4s;
+      }
+      #optica-shop-unique .multi-image-hover .product-img.active { position: relative; opacity: 1; }
+      #optica-shop-unique .product-info {
+        padding: 18px 12px 22px 12px; text-align: center; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px;
+      }
+      #optica-shop-unique .product-brand {
+        font-size: 1rem; color: var(--color-secondary); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; opacity: 0.85;
+      }
+      #optica-shop-unique .product-name {
+        font-size: 1.15rem; font-weight: 700; color: var(--color-text); margin: 6px 0 0 0; flex-grow: 1; letter-spacing: 0.5px;
+      }
+      #optica-shop-unique .product-price {
+        font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 8px; letter-spacing: 0.5px;
+      }
+      #optica-shop-unique .discount-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: #FF6600;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 6px 14px;
+        border-radius: 16px;
+        z-index: 4;
+        box-shadow: 0 2px 8px rgba(255,102,0,0.10);
+        letter-spacing: 0.5px;
+      }
+      #optica-shop-unique .product-price {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+      #optica-shop-unique .old-price {
+        color: #888;
+        text-decoration: line-through;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 2px;
+        opacity: 0.7;
+      }
+      #optica-shop-unique .new-price {
+        color: var(--color-primary);
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      @media (max-width: 1200px) {
+        #optica-shop-unique .product-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 900px) {
+        #optica-shop-unique .shop-container { flex-direction: column; gap: 24px; }
+        #optica-shop-unique .product-grid { grid-template-columns: 1fr 1fr; padding: 18px 8px; gap: 18px; }
+      }
+      @media (max-width: 600px) {
+        #optica-shop-unique .shop-container { padding: 12px 2vw; }
+        #optica-shop-unique .product-grid { grid-template-columns: 1fr; padding: 8px 2px; gap: 18px; }
+        #optica-shop-unique .product-card { border-radius: 12px; min-height: 320px; }
+        #optica-shop-unique .product-info { padding: 10px 4px 14px 4px; }
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <div class="shop-container">
+      <main class="product-grid">
+        <!-- Tarjeta de Producto: AOM0130 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aom0130/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo Adidas"></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/AOM0130-ADIDAS-1-scaled.webp" alt="AOM0130 - Adidas - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/AOM0130-ADIDAS-2-scaled.webp" alt="AOM0130 - Adidas - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/AOM0130-ADIDAS-3-scaled.webp" alt="AOM0130 - Adidas - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Adidas</span>
+            <h2 class="product-name">AOM0130</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB5154 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb5154/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB5154-RAY-BAN-1-scaled.webp" alt="RB5154 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB5154-RAY-BAN-2-scaled.webp" alt="RB5154 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB5154-RAY-BAN-3-scaled.webp" alt="RB5154 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB5154</h2>
+            <p class="product-price">
+              <span class="old-price">$3,600.00</span>
+              <span class="new-price">$3,060.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB7074 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb7074/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB7074-RAY-BAN-1-1-scaled.webp" alt="RB7074 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB7074-RAY-BAN-2-scaled.webp" alt="RB7074 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB7074-RAY-BAN-3-scaled.webp" alt="RB7074 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB7074</h2>
+            <p class="product-price">
+              <span class="old-price">$3,300.00</span>
+              <span class="new-price">$2,805.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB7217 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb7217/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB7217-RAY-BAN-1-scaled.webp" alt="RB7217 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB7217-RAY-BAN-2-scaled.webp" alt="RB7217 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RB7217-RAY-BAN-3-scaled.webp" alt="RB7217 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB7217</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RBK1007 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rbk1007/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Reebok.webp" alt="Logo Reebok"></div>
+            <div class="discount-badge">10% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RBK1007-REEBOK-1-scaled.webp" alt="RBK1007 - Reebok - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RBK1007-REEBOK-2-scaled.webp" alt="RBK1007 - Reebok - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RBK1007-REEBOK-3-scaled.webp" alt="RBK1007 - Reebok - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Reebok</span>
+            <h2 class="product-name">RBK1007</h2>
+            <p class="product-price">
+              <span class="old-price">$1,700.00</span>
+              <span class="new-price">$1,530.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VAE0AOP8 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vae0aop8/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Aeropostale-scaled.webp" alt="Logo Aéropostale"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAE0AOP8-AEROPOSTALE-1-1-scaled.webp" alt="VAE0AOP8 - Aeropostale - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAE0AOP8-AEROPOSTALE-2-scaled.webp" alt="VAE0AOP8 - Aeropostale - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAE0AOP8-AEROPOSTALE-3-scaled.webp" alt="VAE0AOP8 - Aeropostale - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Aeropostale</span>
+            <h2 class="product-name">VAE0AOP8</h2>
+            <p class="product-price">
+              <span class="old-price">$2,100.00</span>
+              <span class="new-price">$1,785.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VAE23010 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vae23010/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Aeropostale-scaled.webp" alt="Logo Aéropostale"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAE23010-AEROPOSTALE-1-scaled.webp" alt="VAE23010 - Aeropostale - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAE23010-AEROPOSTALE-2-scaled.webp" alt="VAE23010 - Aeropostale - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAE23010-AEROPOSTALE-3-scaled.webp" alt="VAE23010 - Aeropostale - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Aeropostale</span>
+            <h2 class="product-name">VAE23010</h2>
+            <p class="product-price">
+              <span class="old-price">$2,100.00</span>
+              <span class="new-price">$1,785.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VAEAE012 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vaeae012/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Aeropostale-scaled.webp" alt="Logo Aéropostale"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAEAE012-AEROPOSTALE-1-scaled.webp" alt="VAEAE012 - Aeropostale - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAEAE012-AEROPOSTALE-2-scaled.webp" alt="VAEAE012 - Aeropostale - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAEAE012-AEROPOSTALE-3-scaled.webp" alt="VAEAE012 - Aeropostale - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Aeropostale</span>
+            <h2 class="product-name">VAEAE012</h2>
+            <p class="product-price">
+              <span class="old-price">$2,100.00</span>
+              <span class="new-price">$1,785.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VAEAE013 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vaeae013/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Aeropostale-scaled.webp" alt="Logo Aéropostale"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAEAE013-AEROPOSTALE-1-scaled.webp" alt="VAEAE013 - Aeropostale - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAEAE013-AEROPOSTALE-2-scaled.webp" alt="VAEAE013 - Aeropostale - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VAEAE013-AEROPOSTALE-3-scaled.webp" alt="VAEAE013 - Aeropostale - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Aeropostale</span>
+            <h2 class="product-name">VAEAE013</h2>
+            <p class="product-price">
+              <span class="old-price">$2,100.00</span>
+              <span class="new-price">$1,785.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE32265 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle32265/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VLE32265-CLOE-1-1-scaled.webp" alt="VLE32265 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VLE32265-CLOE-2-scaled.webp" alt="VLE32265 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VLE32265-CLOE-3-scaled.webp" alt="VLE32265 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE32265</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VPV09131 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vpv09131/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/pineda-covalin.webp" alt="Logo Pineda Covalin"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV09131-PINEDACOVALIN-1-scaled.webp" alt="VPV09131 - Pinedacovalin - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV09131-PINEDACOVALIN-2-scaled.webp" alt="VPV09131 - Pinedacovalin - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV09131-PINEDACOVALIN-3-scaled.webp" alt="VPV09131 - Pinedacovalin - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Pinedacovalin</span>
+            <h2 class="product-name">VPV09131</h2>
+            <p class="product-price">
+              <span class="old-price">$5,999.00</span>
+              <span class="new-price">$5,099.15</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VPV09157 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vpv09157/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/pineda-covalin.webp" alt="Logo Pineda Covalin"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV09157-PINEDACOVALIN-1-scaled.webp" alt="VPV09157 - Pinedacovalin - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV09157-PINEDACOVALIN-2-scaled.webp" alt="VPV09157 - Pinedacovalin - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV09157-PINEDACOVALIN-3-scaled.webp" alt="VPV09157 - Pinedacovalin - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Pinedacovalin</span>
+            <h2 class="product-name">VPV09157</h2>
+            <p class="product-price">
+              <span class="old-price">$5,999.00</span>
+              <span class="new-price">$5,099.15</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VPV3W04Y -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vpv3w04y/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/pineda-covalin.webp" alt="Logo Pineda Covalin"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV3W04Y-PINEDACOVALIN-1-scaled.webp" alt="VPV3W04Y - Pinedacovalin - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV3W04Y-PINEDACOVALIN-2-scaled.webp" alt="VPV3W04Y - Pinedacovalin - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPV3W04Y-PINEDACOVALIN-3-scaled.webp" alt="VPV3W04Y - Pinedacovalin - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Pinedacovalin</span>
+            <h2 class="product-name">VPV3W04Y</h2>
+            <p class="product-price">
+              <span class="old-price">$5,999.00</span>
+              <span class="new-price">$5,099.15</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VPVW02YL -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vpvw02yl/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/pineda-covalin.webp" alt="Logo Pineda Covalin"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPVW02YL-PINEDACOVALIN-1-scaled.webp" alt="VPVW02YL - Pinedacovalin - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPVW02YL-PINEDACOVALIN-2-scaled.webp" alt="VPVW02YL - Pinedacovalin - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VPVW02YL-PINEDACOVALIN-3-scaled.webp" alt="VPVW02YL - Pinedacovalin - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Pinedacovalin</span>
+            <h2 class="product-name">VPVW02YL</h2>
+            <p class="product-price">
+              <span class="old-price">$5,999.00</span>
+              <span class="new-price">$5,099.15</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VTO431 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vto431/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/TOUS.webp" alt="Logo Tous"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTO431-TOUS-1-scaled.webp" alt="VTO431 - Tous - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTO431-TOUS-2-scaled.webp" alt="VTO431 - Tous - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTO431-TOUS-3-scaled.webp" alt="VTO431 - Tous - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Tous</span>
+            <h2 class="product-name">VTO431</h2>
+            <p class="product-price">
+              <span class="old-price">$5,200.00</span>
+              <span class="new-price">$4,420.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VTOC01 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vtoc01/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/TOUS.webp" alt="Logo Tous"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTOC01-TOUS-1-scaled.webp" alt="VTOC01 - Tous - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTOC01-TOUS-2-scaled.webp" alt="VTOC01 - Tous - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTOC01-TOUS-3-scaled.webp" alt="VTOC01 - Tous - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Tous</span>
+            <h2 class="product-name">VTOC01</h2>
+            <p class="product-price">
+              <span class="old-price">$5,200.00</span>
+              <span class="new-price">$4,420.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VBI 31175 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vbi-31175/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/believe.webp" alt="Logo Believe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI31175.-1_resultado.webp" alt="VBI 31175 - Believe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI31175.-2_resultado.webp" alt="VBI 31175 - Believe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI31175.-3_resultado.webp" alt="VBI 31175 - Believe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Believe</span>
+            <h2 class="product-name">VBI 31175</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VBI 31229 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vbi-31229/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/believe.webp" alt="Logo Believe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31229.-1_resultado.webp" alt="VBI 31229 - Believe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31229.-2_resultado.webp" alt="VBI 31229 - Believe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31229.-3_resultado.webp" alt="VBI 31229 - Believe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Believe</span>
+            <h2 class="product-name">VBI 31229</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VBI 31338 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vbi-31338/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/believe.webp" alt="Logo Believe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31338.-1_resultado.webp" alt="VBI 31338 - Believe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31338.-2_resultado.webp" alt="VBI 31338 - Believe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31338.-3_resultado.webp" alt="VBI 31338 - Believe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Believe</span>
+            <h2 class="product-name">VBI 31338</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VBI 31352 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vbi-31352/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/believe.webp" alt="Logo Believe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31352.1_resultado.webp" alt="VBI 31352 - Believe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31352.2_resultado.webp" alt="VBI 31352 - Believe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31352.3_resultado.webp" alt="VBI 31352 - Believe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Believe</span>
+            <h2 class="product-name">VBI 31352</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VBI 31362 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vbi-31362/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/believe.webp" alt="Logo Believe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31362.-1_resultado.webp" alt="VBI 31362 - Believe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31362.-2_resultado.webp" alt="VBI 31362 - Believe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31362.-3_resultado.webp" alt="VBI 31362 - Believe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Believe</span>
+            <h2 class="product-name">VBI 31362</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VBI 31621 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vbi-31621/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/believe.webp" alt="Logo Believe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31621.-1_resultado.webp" alt="VBI 31621 - Believe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31621.-2_resultado.webp" alt="VBI 31621 - Believe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31621.-3_resultado.webp" alt="VBI 31621 - Believe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Believe</span>
+            <h2 class="product-name">VBI 31621</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VBI 31225 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vbi-31225/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/believe.webp" alt="Logo Believe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31225.NEGRO-1_resultado.webp" alt="VBI 31225 - Believe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31225.NEGRO-2_resultado.webp" alt="VBI 31225 - Believe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31225.NEGRO-3_resultado.webp" alt="VBI 31225 - Believe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Believe</span>
+            <h2 class="product-name">VBI 31225</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 4165C -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle-4165c/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.4165C.-1_resultado.webp" alt="VLE 4165C - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.4165C.-2_resultado.webp" alt="VLE 4165C - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.4165C.-3_resultado.webp" alt="VLE 4165C - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 4165C</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VTOC02 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vtoc02/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/TOUS.webp" alt="Logo Tous"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTOC02-TOUS-1-scaled.webp" alt="VTOC02 - Tous - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTOC02-TOUS-2-scaled.webp" alt="VTOC02 - Tous - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/VTOC02-TOUS-3-scaled.webp" alt="VTOC02 - Tous - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Tous</span>
+            <h2 class="product-name">VTOC02</h2>
+            <p class="product-price">
+              <span class="old-price">$5,200.00</span>
+              <span class="new-price">$4,420.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjetas de Producto: 1ER LOTE -->
+        <!-- Tarjeta de Producto: RB2210 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb2210/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2210-1_resultado.webp" alt="RB2210 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2210-3_resultado.webp" alt="RB2210 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2210-2_resultado.webp" alt="RB2210 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB2210</h2>
+            <p class="product-price">
+              <span class="old-price">$5,750.00</span>
+              <span class="new-price">$4,887.50</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB2398 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb2398/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-1_resultado.webp" alt="RB2398 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-2_resultado.webp" alt="RB2398 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB2398-3_resultado.webp" alt="RB2398 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB2398</h2>
+            <p class="product-price">
+              <span class="old-price">$6,250.00</span>
+              <span class="new-price">$5,312.50</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB3447V -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb3447v/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3447V-1_resultado.webp" alt="RB3447V - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3447V-2_resultado.webp" alt="RB3447V - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3447V-3_resultado.webp" alt="RB3447V - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB3447V</h2>
+            <p class="product-price">
+              <span class="old-price">$3,300.00</span>
+              <span class="new-price">$2,805.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB3547 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb3547/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB7074-1_resultado.webp" alt="RB3547 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB7074-2_resultado.webp" alt="RB3547 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB7074-3_resultado.webp" alt="RB3547 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB3547</h2>
+            <p class="product-price">
+              <span class="old-price">$4,999.00</span>
+              <span class="new-price">$4,249.15</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB3735V -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb3735v/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3735V-1_resultado.webp" alt="RB3735V - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3735V-2_resultado.webp" alt="RB3735V - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3735V-3_resultado.webp" alt="RB3735V - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB3735V</h2>
+            <p class="product-price">
+              <span class="old-price">$3,500.00</span>
+              <span class="new-price">$2,975.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB4386 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb4386/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB4386-1_resultado.webp" alt="RB4386 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB4386-2_resultado.webp" alt="RB4386 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB4386-3_resultado.webp" alt="RB4386 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB4386</h2>
+            <p class="product-price">
+              <span class="old-price">$5,999.00</span>
+              <span class="new-price">$5,099.15</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB5422 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb5422/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB5422-1_resultado.webp" alt="RB5422 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB5422-2_resultado.webp" alt="RB5422 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB5422-3_resultado.webp" alt="RB5422 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB5422</h2>
+            <p class="product-price">
+              <span class="old-price">$3,300.00</span>
+              <span class="new-price">$2,805.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB7239 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb7239/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB7239-1_resultado.webp" alt="RB7239 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB7239-2_resultado.webp" alt="RB7239 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB7239-3_resultado.webp" alt="RB7239 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB7239</h2>
+            <p class="product-price">
+              <span class="old-price">$3,600.00</span>
+              <span class="new-price">$3,060.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VBI 31063 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vbi31063/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/believe.webp" alt="Logo Believe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31063-1_resultado.webp" alt="VBI 31063 - Believe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31063-2_resultado.webp" alt="VBI 31063 - Believe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/BELIEVE-VBI.31063-3_resultado.webp" alt="VBI 31063 - Believe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Believe</span>
+            <h2 class="product-name">VBI 31063</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 40733 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle40733/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.40733.-1_resultado-1.webp" alt="VLE 40733 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.40733.-2_resultado-1.webp" alt="VLE 40733 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.40733.-3_resultado-1.webp" alt="VLE 40733 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 40733</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 40737 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle40737/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.40737.-1_resultado.webp" alt="VLE 40737 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.40737.-2_resultado.webp" alt="VLE 40737 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.40737.-3_resultado.webp" alt="VLE 40737 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 40737</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 41684 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle41684/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.41684.-1_resultado-1.webp" alt="VLE 41684 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.41684.-3_resultado-1.webp" alt="VLE 41684 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.41684.-3_resultado-1.webp" alt="VLE 41684 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 41684</h2>
+            <p class="product-price">
+              <span class="old-price">$3,600.00</span>
+              <span class="new-price">$3,060.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 41691 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle41691/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.41691.-1_resultado.webp" alt="VLE 41691 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.41691.-2_resultado.webp" alt="VLE 41691 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.41691.-3_resultado.webp" alt="VLE 41691 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 41691</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 51433 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle51433/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51433.-1_resultado-1.webp" alt="VLE 51433 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51433.-2_resultado-1.webp" alt="VLE 51433 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51433.-3_resultado-1.webp" alt="VLE 51433 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 51433</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 51439 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle51439/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51439.-1_resultado.webp" alt="VLE 51439 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51439.-2_resultado.webp" alt="VLE 51439 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51439.-3_resultado.webp" alt="VLE 51439 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 51439</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 51441 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle51441/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51441.-1_resultado.webp" alt="VLE 51441 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51441.-2_resultado.webp" alt="VLE 51441 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.51441.-3_resultado.webp" alt="VLE 51441 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 51441</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: RB3825 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/rb3825/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Ray-Ban.webp" alt="Logo Ray-Ban"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3825-1_resultado.webp" alt="RB3825 - Ray-Ban - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3825-2_resultado.webp" alt="RB3825 - Ray-Ban - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/RAY-BAN-RB3825-3_resultado.webp" alt="RB3825 - Ray-Ban - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Ray-Ban</span>
+            <h2 class="product-name">RB3825</h2>
+            <p class="product-price">
+              <span class="old-price">$5,999.00</span>
+              <span class="new-price">$5,099.15</span>
+            </p>
+          </div>
+        </div>
+        <!-- Tarjeta de Producto: VLE 42626 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/vle42626/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/cloe.webp" alt="Logo Cloe"></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.42626.-1_resultado.webp" alt="VLE 42626 - Cloe - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.42626.-2_resultado.webp" alt="VLE 42626 - Cloe - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/CLOE-VLE.42626.-3_resultado.webp" alt="VLE 42626 - Cloe - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand">Cloe</span>
+            <h2 class="product-name">VLE 42626</h2>
+            <p class="product-price">
+              <span class="old-price">$3,800.00</span>
+              <span class="new-price">$3,230.00</span>
+            </p>
+          </div>
+        </div>
+      <!-- Tarjeta de Producto: AOK0050 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aok0050/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo "></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOK0050-Adidas-3-MAIN.webp" alt="AOK0050 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOK0050-Adidas-2-PT01.webp" alt="AOK0050 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOK0050-Adidas-1-PT02.webp" alt="AOK0050 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ADIDAS</span>
+<h2 class="product-name font-bold">AOK0050</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AOR0000 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aor0000/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo "></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR000O-Adidas-3-MAIN.webp" alt="AOR0000 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR000O-Adidas-1-PT01.webp" alt="AOR0000 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR000O-Adidas-2-PT02.webp" alt="AOR0000 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ADIDAS</span>
+<h2 class="product-name font-bold">AOR0000</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AOR0060 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aor0060/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo "></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR006O-Adidas-3-MAIN.webp" alt="AOR0060 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR006O-Adidas-2-PT01.webp" alt="AOR0060 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR006O-Adidas-1-PT02.webp" alt="AOR0060 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ADIDAS</span>
+<h2 class="product-name font-bold">AOR0060</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AOR0070 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aor0070/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo "></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR007O-Adidas-3-MAIN.webp" alt="AOR0070 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR007O-Adidas-2-PT01.webp" alt="AOR0070 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR007O-Adidas-1-PT02.webp" alt="AOR0070 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ADIDAS</span>
+<h2 class="product-name font-bold">AOR0070</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AOR0080 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aor0080/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo "></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR0080-Adidas-3-MAIN.webp" alt="AOR0080 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR0080-Adidas-2-PT01.webp" alt="AOR0080 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR0080-Adidas-1-PT02.webp" alt="AOR0080 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ADIDAS</span>
+<h2 class="product-name font-bold">AOR0080</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AOR0100 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aor0100/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo "></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR010O-Adidas-3-MAIN.webp" alt="AOR0100 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR010O-Adidas-2-PT01.webp" alt="AOR0100 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR010O-Adidas-1-PT02.webp" alt="AOR0100 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ADIDAS</span>
+<h2 class="product-name font-bold">AOR0100</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AOR0140 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aor0140/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo "></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR014O-Adidas-3-MAIN.webp" alt="AOR0140 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR014O-Adidas-2-PT01.webp" alt="AOR0140 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR014O-Adidas-1-PT02.webp" alt="AOR0140 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ADIDAS</span>
+<h2 class="product-name font-bold">AOR0140</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AOR0280 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/aor0280/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Adidas.webp" alt="Logo "></div>
+            <div class="discount-badge">30% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR0280O-Adidas-3-MAIN.webp" alt="AOR0280 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR0280O-Adidas-2-PT01.webp" alt="AOR0280 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AOR0280O-Adidas-1-PT02.webp" alt="AOR0280 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ADIDAS</span>
+<h2 class="product-name font-bold">AOR0280</h2>
+            <p class="product-price">
+              <span class="old-price">$4,500.00</span>
+              <span class="new-price">$3,150.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AX 1071 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/ax-1071/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Armani-scaled.webp" alt="Logo "></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX1071-ARMANI-3-MAIN.webp" alt="AX 1071 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX1071-ARMANI-1-PT01.webp" alt="AX 1071 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX1071-ARMANI-2-PT02.webp" alt="AX 1071 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ARMANI EXCHANGE</span>
+<h2 class="product-name font-bold">AX 1071</h2>
+            <p class="product-price">
+              <span class="old-price">$3,000.00</span>
+              <span class="new-price">$2,550.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AX 3027 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/ax-3027/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Armani-scaled.webp" alt="Logo "></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3027-ARMANI-3-MAIN.webp" alt="AX 3027 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3027-ARMANI-1-PT01.webp" alt="AX 3027 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3027-ARMANI-2-PT02.webp" alt="AX 3027 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ARMANI EXCHANGE</span>
+<h2 class="product-name font-bold">AX 3027</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AX 3050 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/ax-3050/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Armani-scaled.webp" alt="Logo "></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3050-ARMANI-3-MAIN.webp" alt="AX 3050 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3050-ARMANI-1-PT01.webp" alt="AX 3050 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3050-ARMANI-2-PT02.webp" alt="AX 3050 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ARMANI EXCHANGE</span>
+<h2 class="product-name font-bold">AX 3050</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AX 3077 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/ax-3077/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Armani-scaled.webp" alt="Logo "></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3077-ARMANI-3-MAIN.webp" alt="AX 3077 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3077-ARMANI-1-PT01.webp" alt="AX 3077 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3077-ARMANI-2-PT02.webp" alt="AX 3077 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ARMANI EXCHANGE</span>
+<h2 class="product-name font-bold">AX 3077</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AX 3108 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/ax-3108/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Armani-scaled.webp" alt="Logo "></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3108U-ARMANI-3-MAIN.webp" alt="AX 3108 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3108U-ARMANI-2-PT01.webp" alt="AX 3108 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3108U-ARMANI-1-PT02.webp" alt="AX 3108 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ARMANI EXCHANGE</span>
+<h2 class="product-name font-bold">AX 3108</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AX 3115 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/ax-3115/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Armani-scaled.webp" alt="Logo "></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3115-ARMANI-3-MAIN.webp" alt="AX 3115 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3115-ARMANI-1-PT01.webp" alt="AX 3115 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3115-ARMANI-2-PT02.webp" alt="AX 3115 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ARMANI EXCHANGE</span>
+<h2 class="product-name font-bold">AX 3115</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+<!-- Tarjeta de Producto: AX 3127 -->
+        <div class="product-card" onclick="window.open('https://opticaskairoz.com.mx/ax-3127/','_blank')">
+          <div class="product-image-container multi-image-hover">
+            <div class="product-brand-overlay"><img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/07/Armani-scaled.webp" alt="Logo "></div>
+            <div class="discount-badge">15% de descuento</div>
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3127-ARMANI-3-MAIN.webp" alt="AX 3127 -  - Vista 1" class="product-img active">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3127-ARMANI-2-PT01.webp" alt="AX 3127 -  - Vista 2" class="product-img">
+            <img src="https://opticaskairoz.com.mx/wp-content/uploads/2025/08/AX3127-ARMANI-1-PT02.webp" alt="AX 3127 -  - Vista 3" class="product-img">
+          </div>
+          <div class="product-info">
+            <span class="product-brand text-blue-600 uppercase">ARMANI EXCHANGE</span>
+<h2 class="product-name font-bold">AX 3127</h2>
+            <p class="product-price">
+              <span class="old-price">$2,800.00</span>
+              <span class="new-price">$2,380.00</span>
+            </p>
+          </div>
+        </div>
+</main>
+    </div>
+    <script>
+      (function(){
+        var imageContainers = document.querySelectorAll('#optica-shop-unique .multi-image-hover');
+        imageContainers.forEach(function(container){
+          var images = container.querySelectorAll('.product-img');
+          var currentIndex = 0;
+          var intervalId = null;
+          container.addEventListener('mouseenter', function(){
+            if(images.length > 1){
+              intervalId = setInterval(function(){
+                images[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % images.length;
+                images[currentIndex].classList.add('active');
+              }, 700);
+            }
+          });
+          container.addEventListener('mouseleave', function(){
+            clearInterval(intervalId);
+            images[currentIndex].classList.remove('active');
+            currentIndex = 0;
+            images[currentIndex].classList.add('active');
+          });
+        });
+      })();
+    </script>
+  </div>
