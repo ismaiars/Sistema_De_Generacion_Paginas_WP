@@ -210,7 +210,6 @@ class GeneradorCatalogoApp:
         
         # Tabla de traducción para normalización de marcas (optimización)
         self.trans_table = str.maketrans('', '', ' -_')
-        
         # Configurar limpieza al cerrar
         self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
 
