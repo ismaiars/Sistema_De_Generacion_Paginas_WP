@@ -1,4 +1,6 @@
-## Sistema de Generación de Páginas y Catálogo (WordPress)
+# Sistema de Generación de Páginas y Catálogo (WordPress)
+
+![status](https://img.shields.io/badge/status-active-brightgreen) ![python](https://img.shields.io/badge/Python-3.9%2B-blue) ![platform](https://img.shields.io/badge/platform-Windows-orange)
 
 Aplicación de escritorio (Tkinter) para generar:
 - Páginas HTML individuales de productos a partir de datos en CSV/Excel
@@ -6,13 +8,39 @@ Aplicación de escritorio (Tkinter) para generar:
 
 El flujo está pensado para alimentar páginas/tiendas tipo WordPress/WooCommerce a través de HTML estático basado en plantillas.
 
-### Características principales
+## Tabla de contenidos
+- [Características principales](#características-principales)
+- [Demo / Capturas](#demo--capturas)
+- [Requisitos](#requisitos)
+- [Instalación](#instalación-rápida-powershell)
+- [Ejecución](#ejecución)
+- [Flujo de trabajo](#flujo-de-trabajo)
+  - [Preparar los datos (CSV/Excel)](#1-preparar-los-datos-csvexcel)
+  - [Formato del archivo de logos de marcas](#2-formato-del-archivo-de-logos-de-marcas)
+  - [Pestaña: Página Individual](#3-pestaña-página-individual)
+  - [Pestaña: Catálogo y Tarjetas](#4-pestaña-catálogo-y-tarjetas)
+  - [Pestaña: Generación Masiva](#5-pestaña-generación-masiva)
+- [Validación de imágenes](#validación-de-imágenes)
+- [Personalizar tu plantilla HTML](#personalizar-tu-plantilla-html)
+- [Solución de problemas](#solución-de-problemas)
+- [Estructura del proyecto](#estructura-del-proyecto-resumen)
+- [Contribuir](#contribuir)
+- [Licencia](#licencia)
+
+## Características principales
 - Carga de CSV/Excel y visualización en tabla con selección por fila
 - Generación de página individual de producto desde una plantilla HTML
 - Generación de tarjeta individual y copia/insertado directo en un catálogo HTML existente
 - Generación masiva de múltiples páginas HTML a partir de una plantilla
 - Validación de URLs de imagen en segundo plano
 - Historial de estados por SKU (verde/rojo/normal) persistido en `historial_estado_productos.json`
+
+## Demo / Capturas
+Añade capturas en `docs/` y reféncialas aquí:
+
+![Captura: Pestaña Página Individual](docs/screenshot-tab1.png)
+![Captura: Pestaña Catálogo y Tarjetas](docs/screenshot-tab2.png)
+![Captura: Pestaña Generación Masiva](docs/screenshot-tab3.png)
 
 ---
 
@@ -48,6 +76,12 @@ La aplicación abre una ventana con 3 pestañas:
 1) Página Individual
 2) Catálogo y Tarjetas
 3) Generación Masiva
+
+Comando rápido (one-liner):
+
+```powershell
+cd C:\Users\LENOVO\Desktop\Sistema_De_Generacion_Paginas_WP\Sistema_De_Generacion_Paginas_WP; python programa_2.py
+```
 
 ---
 
@@ -149,6 +183,14 @@ Si partís de `pagina_producto_RB2398.html`, ya tienes un ejemplo funcional.
 - `Datos_2.csv` / `Datos_2.xlsx`: ejemplos de datos
 - `links_logos.txt`: ejemplo de mapeo de marcas a logos
 - `historial_estado_productos.json`: se crea/actualiza automáticamente por la app
+
+---
+
+## Contribuir
+Las PRs son bienvenidas. Recomendaciones:
+- Crea una rama a partir de `main` (por ejemplo, `feat/...` o `fix/...`).
+- Describe claramente el cambio y añade capturas si afecta a la UI.
+- Mantén la compatibilidad con Windows y Python 3.9+.
 
 ---
 
