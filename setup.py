@@ -19,8 +19,8 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 setup(
     name="sistema-generacion-paginas-wp",
     version="2.0.0",
-    author="Ópticas Kairoz - Equipo de Desarrollo",
-    author_email="desarrollo@opticaskairoz.com.mx",
+    author="ismaiars",
+    author_email="ismaiars@gmail.com",
     description="Sistema completo para generación masiva de páginas y tarjetas de productos para WordPress",
     long_description=long_description,
     long_description_content_type="text/markdown",
