@@ -1,0 +1,100 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+PIPFILE.lock
+
+# Entornos virtuales
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos del sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Archivos de salida generados
+*.html
+!plantilla_tarjeta.html
+!README.md
+
+# Archivos de datos sensibles
+*.xlsx
+*.xls
+!Datos_2.csv
+
+# Logs y archivos temporales
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Archivos de configuración local
+config.local.*
+settings.local.*
+
+# Historial y cache
+historial_estado_productos.json
+.cache/
+*.cache
+
+# Archivos de prueba
+test_*.py
+*_test.py
+tests/
+
+# Documentación generada
+docs/_build/
+
+# Archivos de dependencias
+node_modules/
+
+# Archivos específicos del proyecto
+pagina_producto_*.html
+Armazones.html
+
+# Backups
+*_backup.py
+*.bak
+
+# Archivos de configuración de usuario
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

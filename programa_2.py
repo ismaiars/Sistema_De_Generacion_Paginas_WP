@@ -206,6 +206,12 @@ class GeneradorCatalogoApp:
         self.progress_label = None
         self.executor = ThreadPoolExecutor(max_workers=4)
         
+        # Variables para pestaña de tarjetas masivas
+        self.productos_seleccionados_tarjetas = set()
+        self.tarjetas_generadas = {}
+        self.links_redireccion = {}  # Dict para almacenar links de redirección por SKU
+        self.progress_var_tarjetas = None  # Se inicializa en _configurar_tab4
+        
         self.cargar_historial_estado()
         
         # Tabla de traducción para normalización de marcas (optimización)
@@ -245,6 +251,10 @@ class GeneradorCatalogoApp:
         # --- Pestaña 3: Generación masiva ---
         self.tab3 = tk.Frame(self.notebook, bg="#ffffff")
         self.notebook.add(self.tab3, text="  Generación Masiva  ")
+        
+        # --- Pestaña 4: Generación masiva de tarjetas ---
+        self.tab4 = tk.Frame(self.notebook, bg="#ffffff")
+        self.notebook.add(self.tab4, text="  Tarjetas Masivas  ")
 
         # --- Pestaña 1 ---
         # Header con título
@@ -725,8 +735,231 @@ class GeneradorCatalogoApp:
         # Variables para generación masiva
         self.productos_seleccionados_masiva = set()
         
+        # Variables para generación masiva de tarjetas
+        self.productos_seleccionados_tarjetas = set()
+        self.tarjetas_generadas = {}  # Dict para almacenar tarjetas generadas
+        
+        # Configurar pestaña 4 después de configurar las otras pestañas
+        self._configurar_tab4()
+        
         # Configurar efectos hover para botones (al final, después de crear todos los botones)
         self._setup_button_hover_effects()
+    
+    def _configurar_tab4(self):
+        """Configura la pestaña 4 para generación masiva de tarjetas"""
+        # Header con título
+        header4 = tk.Frame(self.tab4, bg="#ffffff", height=60)
+        header4.pack(fill="x", padx=20, pady=(20, 10))
+        header4.pack_propagate(False)
+        title4 = tk.Label(header4, text="Generación Masiva de Tarjetas para Catálogo", 
+                         font=('Segoe UI', 16, 'bold'), fg="#212529", bg="#ffffff")
+        title4.pack(side="left", pady=15)
+        
+        # Indicador de progreso para pestaña 4
+        self.progress_var_tarjetas = tk.StringVar(value="")
+        self.progress_label_tarjetas = tk.Label(header4, textvariable=self.progress_var_tarjetas,
+                                              font=('Segoe UI', 9), fg="#6c757d", bg="#ffffff")
+        self.progress_label_tarjetas.pack(side="right", pady=15)
+        
+        # Frame de configuración
+        config_frame4 = tk.LabelFrame(self.tab4, text="Configuración",
+                                     font=('Segoe UI', 10, 'bold'), fg="#495057", bg="#ffffff",
+                                     relief="solid", bd=1)
+        config_frame4.pack(fill="x", padx=20, pady=10)
+        
+        config_controls4 = tk.Frame(config_frame4, bg="#ffffff")
+        config_controls4.pack(fill="x", padx=15, pady=15)
+        
+        # Fila 1: Plantilla de tarjeta y catálogo
+        row1_4 = tk.Frame(config_controls4, bg="#ffffff")
+        row1_4.pack(fill="x", pady=(0, 10))
+        
+        tk.Label(row1_4, text="Plantilla de tarjeta:", font=('Segoe UI', 9), 
+                fg="#495057", bg="#ffffff").pack(side="left", padx=(0, 10))
+        self.entry_plantilla_tarjeta_masiva = tk.Entry(row1_4, width=40, font=('Segoe UI', 9),
+                                                      relief="solid", bd=1, bg="#ffffff")
+        self.entry_plantilla_tarjeta_masiva.pack(side="left", padx=(0, 10))
+        self.btn_buscar_plantilla_tarjeta = tk.Button(row1_4, text="🔍 Buscar", 
+                                                     command=self.buscar_plantilla_tarjeta_masiva,
+                                                     font=('Segoe UI', 9), fg="#495057", bg="#f8f9fa",
+                                                     relief="solid", bd=1, padx=15, pady=5, cursor="hand2")
+        self.btn_buscar_plantilla_tarjeta.pack(side="left")
+        
+        # Fila 2: Archivo de catálogo
+        row2_4 = tk.Frame(config_controls4, bg="#ffffff")
+        row2_4.pack(fill="x")
+        
+        tk.Label(row2_4, text="Archivo de catálogo:", font=('Segoe UI', 9), 
+                fg="#495057", bg="#ffffff").pack(side="left", padx=(0, 10))
+        self.entry_catalogo_masivo = tk.Entry(row2_4, width=40, font=('Segoe UI', 9),
+                                             relief="solid", bd=1, bg="#ffffff")
+        self.entry_catalogo_masivo.pack(side="left", padx=(0, 10))
+        self.btn_buscar_catalogo_masivo = tk.Button(row2_4, text="🔍 Buscar", 
+                                                   command=self.buscar_catalogo_masivo,
+                                                   font=('Segoe UI', 9), fg="#495057", bg="#f8f9fa",
+                                                   relief="solid", bd=1, padx=15, pady=5, cursor="hand2")
+        self.btn_buscar_catalogo_masivo.pack(side="left")
+        
+        # Fila 3: Logos de marcas
+        row3_4 = tk.Frame(config_controls4, bg="#ffffff")
+        row3_4.pack(fill="x", pady=(10, 0))
+        
+        tk.Label(row3_4, text="Logos de marcas:", font=('Segoe UI', 9), 
+                fg="#495057", bg="#ffffff").pack(side="left", padx=(0, 10))
+        self.entry_logos_tarjetas = tk.Entry(row3_4, width=40, font=('Segoe UI', 9),
+                                            relief="solid", bd=1, bg="#ffffff")
+        self.entry_logos_tarjetas.pack(side="left", padx=(0, 10))
+        self.btn_cargar_logos_tarjetas = tk.Button(row3_4, text="📁 Cargar", 
+                                                  command=self.cargar_logos_tarjetas,
+                                                  font=('Segoe UI', 9), fg="#495057", bg="#f8f9fa",
+                                                  relief="solid", bd=1, padx=15, pady=5, cursor="hand2")
+        self.btn_cargar_logos_tarjetas.pack(side="left")
+        
+        # Fila 4: Links de redirección
+        row4_4 = tk.Frame(config_controls4, bg="#ffffff")
+        row4_4.pack(fill="x", pady=(10, 0))
+        
+        tk.Label(row4_4, text="Links de redirección:", font=('Segoe UI', 9), 
+                fg="#495057", bg="#ffffff").pack(side="left", padx=(0, 10))
+        self.entry_links_redireccion = tk.Entry(row4_4, width=40, font=('Segoe UI', 9),
+                                               relief="solid", bd=1, bg="#ffffff")
+        self.entry_links_redireccion.pack(side="left", padx=(0, 10))
+        self.btn_cargar_links = tk.Button(row4_4, text="📁 Cargar", 
+                                         command=self.cargar_links_redireccion,
+                                         font=('Segoe UI', 9), fg="#495057", bg="#f8f9fa",
+                                         relief="solid", bd=1, padx=15, pady=5, cursor="hand2")
+        self.btn_cargar_links.pack(side="left")
+        
+        # Frame de selección de productos
+        selection_frame4 = tk.LabelFrame(self.tab4, text="Selección de Productos",
+                                        font=('Segoe UI', 10, 'bold'), fg="#495057", bg="#ffffff",
+                                        relief="solid", bd=1)
+        selection_frame4.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        selection_controls4 = tk.Frame(selection_frame4, bg="#ffffff")
+        selection_controls4.pack(fill="x", padx=15, pady=(15, 10))
+        
+        # Botones de selección
+        self.btn_seleccionar_todos_tarjetas = tk.Button(selection_controls4, text="✅ Seleccionar Todos",
+                                                       command=self.seleccionar_todos_tarjetas,
+                                                       font=('Segoe UI', 9), fg="#ffffff", bg="#17a2b8",
+                                                       relief="flat", padx=15, pady=5, cursor="hand2")
+        self.btn_seleccionar_todos_tarjetas.pack(side="left", padx=(0, 10))
+        
+        self.btn_deseleccionar_todos_tarjetas = tk.Button(selection_controls4, text="❌ Deseleccionar Todos",
+                                                          command=self.deseleccionar_todos_tarjetas,
+                                                          font=('Segoe UI', 9), fg="#ffffff", bg="#6c757d",
+                                                          relief="flat", padx=15, pady=5, cursor="hand2")
+        self.btn_deseleccionar_todos_tarjetas.pack(side="left", padx=(0, 10))
+        
+        self.btn_seleccionar_marcados_tarjetas = tk.Button(selection_controls4, text="✅ Solo Marcados (Verde)",
+                                                           command=self.seleccionar_marcados_tarjetas,
+                                                           font=('Segoe UI', 9), fg="#ffffff", bg="#28a745",
+                                                           relief="flat", padx=15, pady=5, cursor="hand2")
+        self.btn_seleccionar_marcados_tarjetas.pack(side="left")
+        
+        # Información de selección
+        info_selection4 = tk.Frame(selection_controls4, bg="#ffffff")
+        info_selection4.pack(side="right")
+        
+        self.lbl_seleccionados_tarjetas = tk.Label(info_selection4, text="Seleccionados: 0",
+                                                   font=('Segoe UI', 9, 'bold'), fg="#495057", bg="#ffffff")
+        self.lbl_seleccionados_tarjetas.pack(side="right")
+        
+        # TreeView para mostrar productos en pestaña de tarjetas
+        tree_frame_tarjetas = tk.Frame(selection_frame4, bg="#ffffff")
+        tree_frame_tarjetas.pack(fill="both", expand=True, padx=15, pady=(0, 15))
+        
+        # Scrollbars para el TreeView tarjetas
+        scrollbar_y_tarjetas = ttk.Scrollbar(tree_frame_tarjetas, orient="vertical")
+        scrollbar_x_tarjetas = ttk.Scrollbar(tree_frame_tarjetas, orient="horizontal")
+        
+        # Configurar estilo para TreeView tarjetas
+        style = ttk.Style()
+        style.configure('Tarjetas.Treeview', 
+                       background='#ffffff',
+                       foreground='#212529',
+                       fieldbackground='#ffffff',
+                       borderwidth=1,
+                       relief='solid')
+        style.configure('Tarjetas.Treeview.Heading', 
+                       background='#f8f9fa',
+                       foreground='#495057',
+                       font=('Segoe UI', 9, 'bold'),
+                       borderwidth=1,
+                       relief='solid')
+        # Evitar selección visual en azul
+        style.map('Tarjetas.Treeview', 
+                 background=[('selected', '#ffffff')],
+                 foreground=[('selected', '#212529')])
+        
+        # TreeView tarjetas
+        self.tree_tarjetas = ttk.Treeview(tree_frame_tarjetas, 
+                                         yscrollcommand=scrollbar_y_tarjetas.set,
+                                         xscrollcommand=scrollbar_x_tarjetas.set,
+                                         selectmode="none", height=12, style='Tarjetas.Treeview')
+        
+        # Configurar scrollbars
+        scrollbar_y_tarjetas.config(command=self.tree_tarjetas.yview)
+        scrollbar_x_tarjetas.config(command=self.tree_tarjetas.xview)
+        
+        # Las columnas se configurarán dinámicamente al cargar CSV
+        self.tree_tarjetas['show'] = 'headings'
+        
+        # Empaquetar TreeView y scrollbars
+        self.tree_tarjetas.grid(row=0, column=0, sticky="nsew")
+        scrollbar_y_tarjetas.grid(row=0, column=1, sticky="ns")
+        scrollbar_x_tarjetas.grid(row=1, column=0, sticky="ew")
+        
+        # Configurar grid weights
+        tree_frame_tarjetas.grid_rowconfigure(0, weight=1)
+        tree_frame_tarjetas.grid_columnconfigure(0, weight=1)
+        
+        # Eventos para selección en TreeView tarjetas
+        self.tree_tarjetas.bind('<Button-1>', self.on_treeview_tarjetas_click)
+        self.tree_tarjetas.bind('<Double-1>', self.on_treeview_tarjetas_double_click)
+        self.tree_tarjetas.bind('<Button-3>', self.on_treeview_tarjetas_right_click)
+        
+        # Menú contextual para TreeView tarjetas
+        self.menu_contextual_tarjetas = tk.Menu(self.tree_tarjetas, tearoff=0)
+        self.menu_contextual_tarjetas.add_command(label="Marcar como OK (Verde)", 
+                                                 command=lambda: self.menu_marcar_estado_tarjetas('verde'))
+        self.menu_contextual_tarjetas.add_command(label="Marcar como Sin imágenes (Amarillo)", 
+                                                 command=lambda: self.menu_marcar_estado_tarjetas('amarillo'))
+        self.menu_contextual_tarjetas.add_command(label="Marcar como Error (Rojo)", 
+                                                 command=lambda: self.menu_marcar_estado_tarjetas('rojo'))
+        self.menu_contextual_tarjetas.add_command(label="Marcar como Generado (Morado)", 
+                                                 command=lambda: self.menu_marcar_estado_tarjetas('morado'))
+        self.menu_contextual_tarjetas.add_command(label="Quitar marca", 
+                                                 command=lambda: self.menu_marcar_estado_tarjetas('normal'))
+        
+        # Frame de acciones
+        actions_frame4 = tk.LabelFrame(self.tab4, text="Acciones de Generación Masiva de Tarjetas",
+                                      font=('Segoe UI', 10, 'bold'), fg="#495057", bg="#ffffff",
+                                      relief="solid", bd=1)
+        actions_frame4.pack(fill="x", padx=20, pady=10)
+        
+        actions_controls4 = tk.Frame(actions_frame4, bg="#ffffff")
+        actions_controls4.pack(fill="x", padx=15, pady=15)
+        
+        # Botón de reiniciar historial en pestaña tarjetas
+        self.btn_reiniciar_historial_tarjetas = tk.Button(actions_controls4, text="🔄 Reiniciar Historial", 
+                                                         command=self.reiniciar_historial_tarjetas,
+                                                         font=('Segoe UI', 9, 'bold'), fg="#ffffff", bg="#dc3545",
+                                                         relief="flat", padx=20, pady=8, cursor="hand2")
+        self.btn_reiniciar_historial_tarjetas.pack(side="left", padx=(0, 10))
+        
+        self.btn_generar_tarjetas_masivo = tk.Button(actions_controls4, text="🎨 Generar Tarjetas Masivamente",
+                                                    command=self.generar_tarjetas_masivo,
+                                                    font=('Segoe UI', 11, 'bold'), fg="#ffffff", bg="#6f42c1",
+                                                    relief="flat", padx=30, pady=10, cursor="hand2")
+        self.btn_generar_tarjetas_masivo.pack(side="left", padx=(0, 10))
+        
+        self.btn_insertar_tarjetas_catalogo = tk.Button(actions_controls4, text="➕ Añadir al Catálogo",
+                                                       command=self.insertar_tarjetas_en_catalogo,
+                                                       font=('Segoe UI', 11, 'bold'), fg="#ffffff", bg="#28a745",
+                                                       relief="flat", padx=30, pady=10, cursor="hand2")
+        self.btn_insertar_tarjetas_catalogo.pack(side="left")
     
     def _setup_button_hover_effects(self):
         """Configura efectos hover para los botones"""
@@ -734,13 +967,18 @@ class GeneradorCatalogoApp:
             (self.btn_cargar, "#007bff", "#0056b3"),
             (self.btn_reiniciar_historial, "#dc3545", "#c82333"),
             (self.btn_reiniciar_historial_masiva, "#dc3545", "#c82333"),
+            (self.btn_reiniciar_historial_tarjetas, "#dc3545", "#c82333"),
             (self.btn_buscar_plantilla_ind, "#f8f9fa", "#e9ecef"),
+            (self.btn_buscar_plantilla_tarjeta, "#f8f9fa", "#e9ecef"),
+            (self.btn_buscar_catalogo_masivo, "#f8f9fa", "#e9ecef"),
             (self.btn_pagina_individual, "#28a745", "#1e7e34"),
             (self.btn_buscar_catalogo, "#f8f9fa", "#e9ecef"),
             (self.btn_cargar_logos, "#007bff", "#0056b3"),
             (self.btn_generar_tarjeta, "#007bff", "#0056b3"),
             (self.btn_copiar_tarjeta, "#6c757d", "#545b62"),
-            (self.btn_insertar_tarjeta, "#28a745", "#1e7e34")
+            (self.btn_insertar_tarjeta, "#28a745", "#1e7e34"),
+            (self.btn_generar_tarjetas_masivo, "#6f42c1", "#5a32a3"),
+            (self.btn_insertar_tarjetas_catalogo, "#28a745", "#1e7e34")
         ]
         
         for button, normal_color, hover_color in buttons_config:
@@ -1636,6 +1874,9 @@ class GeneradorCatalogoApp:
         # Sincronizar datos con pestaña masiva
         self.sincronizar_datos_masiva()
         
+        # Sincronizar datos con pestaña de tarjetas
+        self.sincronizar_datos_tarjetas()
+        
         # Forzar sincronización del historial después de cargar CSV
         print(f"DEBUG: Estado filas después de cargar CSV: {self.estado_filas}")
         self.forzar_sincronizacion_completa()
@@ -1975,6 +2216,487 @@ class GeneradorCatalogoApp:
             self.img1_2.insert(0, self.img1.get())
             self.img2_2.insert(0, self.img2.get())
             self.img3_2.insert(0, self.img3.get())
+    
+    # --- Métodos para Generación Masiva de Tarjetas ---
+    
+    def buscar_plantilla_tarjeta_masiva(self):
+        """Busca archivo de plantilla de tarjeta para generación masiva"""
+        filename = filedialog.askopenfilename(
+            title="Seleccionar plantilla de tarjeta HTML",
+            filetypes=[("Archivos HTML", "*.html"), ("Todos los archivos", "*.*")]
+        )
+        if filename:
+            self.entry_plantilla_tarjeta_masiva.delete(0, tk.END)
+            self.entry_plantilla_tarjeta_masiva.insert(0, filename)
+    
+    def buscar_catalogo_masivo(self):
+        """Busca archivo de catálogo para inserción masiva"""
+        filename = filedialog.askopenfilename(
+            title="Seleccionar archivo de catálogo HTML",
+            filetypes=[("Archivos HTML", "*.html"), ("Todos los archivos", "*.*")]
+        )
+        if filename:
+            self.entry_catalogo_masivo.delete(0, tk.END)
+            self.entry_catalogo_masivo.insert(0, filename)
+    
+    def seleccionar_todos_tarjetas(self):
+        """Selecciona todos los productos en la pestaña de tarjetas"""
+        if not hasattr(self, 'tree_tarjetas') or not self.df is not None:
+            return
+        
+        self.productos_seleccionados_tarjetas.clear()
+        for item in self.tree_tarjetas.get_children():
+            self.productos_seleccionados_tarjetas.add(item)
+            # Marcar visualmente como seleccionado
+            self.tree_tarjetas.set(item, 'Seleccionado', '✓')
+        
+        self.actualizar_contador_seleccionados_tarjetas()
+    
+    def deseleccionar_todos_tarjetas(self):
+        """Deselecciona todos los productos en la pestaña de tarjetas"""
+        if not hasattr(self, 'tree_tarjetas'):
+            return
+        
+        self.productos_seleccionados_tarjetas.clear()
+        for item in self.tree_tarjetas.get_children():
+            self.tree_tarjetas.set(item, 'Seleccionado', '')
+        
+        self.actualizar_contador_seleccionados_tarjetas()
+    
+    def seleccionar_marcados_tarjetas(self):
+        """Selecciona solo los productos marcados como OK (verde) en la pestaña de tarjetas"""
+        if not hasattr(self, 'tree_tarjetas'):
+            return
+        
+        self.productos_seleccionados_tarjetas.clear()
+        for item in self.tree_tarjetas.get_children():
+            # Verificar si está marcado como verde en el historial
+            sku = self.tree_tarjetas.set(item, 'Valor(es) del atributo 1')
+            estado = self.estado_filas.get(sku, 'normal')
+            
+            if estado == 'verde':
+                self.productos_seleccionados_tarjetas.add(item)
+                self.tree_tarjetas.set(item, 'Seleccionado', '✓')
+            else:
+                self.tree_tarjetas.set(item, 'Seleccionado', '')
+        
+        self.actualizar_contador_seleccionados_tarjetas()
+    
+    def actualizar_contador_seleccionados_tarjetas(self):
+        """Actualiza el contador de productos seleccionados en la pestaña de tarjetas"""
+        count = len(self.productos_seleccionados_tarjetas)
+        self.lbl_seleccionados_tarjetas.config(text=f"Seleccionados: {count}")
+    
+    def on_treeview_tarjetas_click(self, event):
+        """Maneja clics en el TreeView de tarjetas"""
+        region = self.tree_tarjetas.identify_region(event.x, event.y)
+        if region == "cell":
+            item = self.tree_tarjetas.identify_row(event.y)
+            column = self.tree_tarjetas.identify_column(event.x)
+            
+            # Si se hace clic en la columna de selección
+            if column == '#1':  # Primera columna (Seleccionado)
+                if item in self.productos_seleccionados_tarjetas:
+                    self.productos_seleccionados_tarjetas.remove(item)
+                    self.tree_tarjetas.set(item, 'Seleccionado', '')
+                else:
+                    self.productos_seleccionados_tarjetas.add(item)
+                    self.tree_tarjetas.set(item, 'Seleccionado', '✓')
+                
+                self.actualizar_contador_seleccionados_tarjetas()
+    
+    def on_treeview_tarjetas_double_click(self, event):
+        """Maneja doble clic en el TreeView de tarjetas"""
+        pass  # Implementar si es necesario
+    
+    def on_treeview_tarjetas_right_click(self, event):
+        """Maneja clic derecho en el TreeView de tarjetas"""
+        item = self.tree_tarjetas.identify_row(event.y)
+        if item:
+            self.tree_tarjetas.selection_set(item)
+            self.menu_contextual_tarjetas.post(event.x_root, event.y_root)
+    
+    def menu_marcar_estado_tarjetas(self, estado):
+        """Marca el estado de una fila en el TreeView de tarjetas"""
+        selection = self.tree_tarjetas.selection()
+        if not selection:
+            return
+        
+        for item in selection:
+            sku = self.tree_tarjetas.set(item, 'Valor(es) del atributo 1')
+            self.set_estado_fila_tarjetas(sku, estado)
+            self.update_checkbox_and_color_tarjetas(item)
+        
+        self.guardar_historial_estado()
+    
+    def set_estado_fila_tarjetas(self, sku, estado):
+        """Establece el estado de una fila en la pestaña de tarjetas"""
+        if estado == 'normal':
+            if sku in self.estado_filas:
+                del self.estado_filas[sku]
+        else:
+            self.estado_filas[sku] = estado
+    
+    def update_checkbox_and_color_tarjetas(self, rowid):
+        """Actualiza el color de fondo de una fila en el TreeView de tarjetas"""
+        sku = self.tree_tarjetas.set(rowid, 'Valor(es) del atributo 1')
+        estado = self.estado_filas.get(sku, 'normal')
+        
+        # Definir colores para cada estado
+        colores = {
+            'verde': '#d4edda',    # Verde claro
+            'amarillo': '#fff3cd', # Amarillo claro
+            'rojo': '#f8d7da',     # Rojo claro
+            'morado': '#e2d9f3',   # Morado claro
+            'normal': '#ffffff'    # Blanco
+        }
+        
+        color = colores.get(estado, '#ffffff')
+        
+        # Aplicar color a todas las columnas de la fila
+        for col in self.tree_tarjetas['columns']:
+            self.tree_tarjetas.set(rowid, col, self.tree_tarjetas.set(rowid, col))
+        
+        # Configurar tags para colores
+        tag_name = f"estado_{estado}"
+        self.tree_tarjetas.tag_configure(tag_name, background=color)
+        
+        # Aplicar tag a la fila
+        current_tags = list(self.tree_tarjetas.item(rowid, 'tags'))
+        # Remover tags de estado anteriores
+        current_tags = [tag for tag in current_tags if not tag.startswith('estado_')]
+        current_tags.append(tag_name)
+        self.tree_tarjetas.item(rowid, tags=current_tags)
+    
+    def reiniciar_historial_tarjetas(self):
+        """Reinicia el historial de estados en la pestaña de tarjetas"""
+        if messagebox.askyesno("Confirmar", "¿Estás seguro de que quieres reiniciar el historial de estados?"):
+            # Limpiar estados
+            self.estado_filas.clear()
+            self.tarjetas_generadas.clear()
+            
+            # Actualizar TreeView
+            if hasattr(self, 'tree_tarjetas'):
+                for item in self.tree_tarjetas.get_children():
+                    self.update_checkbox_and_color_tarjetas(item)
+            
+            # Guardar cambios
+            self.guardar_historial_estado()
+            
+            messagebox.showinfo("Éxito", "Historial reiniciado correctamente.")
+    
+    def configurar_columnas_tarjetas(self):
+        """Configura las columnas del TreeView de tarjetas basándose en el CSV cargado"""
+        if self.df is None:
+            return
+        
+        # Limpiar TreeView
+        for item in self.tree_tarjetas.get_children():
+            self.tree_tarjetas.delete(item)
+        
+        # Configurar columnas
+        columnas = ['Seleccionado'] + list(self.df.columns)
+        self.tree_tarjetas['columns'] = columnas
+        
+        # Configurar encabezados y anchos
+        anchos_columnas = {
+            'Seleccionado': 80,
+            'Valor(es) del atributo 1': 120,  # SKU
+            'Valor(es) del atributo 2': 150,  # Marca
+            'Precio normal': 100,
+            'precio con descuento': 120,
+            'Porcentajede descuento': 100
+        }
+        
+        for col in columnas:
+            ancho = anchos_columnas.get(col, 150)
+            self.tree_tarjetas.heading(col, text=col, anchor='w')
+            self.tree_tarjetas.column(col, width=ancho, anchor='w')
+        
+        # Llenar con datos
+        for index, row in self.df.iterrows():
+            valores = [''] + [str(row.get(col, '')) for col in self.df.columns]
+            item_id = self.tree_tarjetas.insert('', 'end', values=valores)
+            
+            # Aplicar color basado en el historial
+            self.update_checkbox_and_color_tarjetas(item_id)
+    
+    def sincronizar_datos_tarjetas(self):
+        """Sincroniza los datos del CSV con el TreeView de tarjetas"""
+        if self.df is not None:
+            self.configurar_columnas_tarjetas()
+    
+    def generar_tarjetas_masivo(self):
+        """Genera tarjetas masivamente para los productos seleccionados"""
+        if not self.productos_seleccionados_tarjetas:
+            messagebox.showwarning("Advertencia", "No hay productos seleccionados.")
+            return
+        
+        plantilla_path = self.entry_plantilla_tarjeta_masiva.get().strip()
+        if not plantilla_path or not os.path.exists(plantilla_path):
+            messagebox.showerror("Error", "Selecciona una plantilla de tarjeta válida.")
+            return
+        
+        if not self.logos_dict:
+            messagebox.showwarning("Advertencia", "No se han cargado los logos de marcas. Algunas tarjetas podrían no tener logo.")
+        
+        # Ejecutar generación en hilo separado
+        threading.Thread(target=self._generar_tarjetas_async, daemon=True).start()
+    
+    def _generar_tarjetas_async(self):
+        """Genera tarjetas de forma asíncrona"""
+        try:
+            plantilla_path = self.entry_plantilla_tarjeta_masiva.get().strip()
+            
+            # Cargar plantilla
+            plantilla_content = cargar_plantilla_html(plantilla_path)
+            if not plantilla_content:
+                return
+            
+            total_productos = len(self.productos_seleccionados_tarjetas)
+            productos_procesados = 0
+            
+            self.progress_var_tarjetas.set(f"Generando tarjetas... 0/{total_productos}")
+            
+            for item_id in self.productos_seleccionados_tarjetas:
+                try:
+                    # Obtener datos del producto
+                    valores = {}
+                    for col in self.tree_tarjetas['columns']:
+                        if col != 'Seleccionado':
+                            valores[col] = self.tree_tarjetas.set(item_id, col)
+                    
+                    # Generar tarjeta
+                    tarjeta_html = self._generar_tarjeta_individual(valores, plantilla_content)
+                    
+                    if tarjeta_html:
+                        # Guardar tarjeta generada
+                        sku = valores.get('Valor(es) del atributo 1', '')
+                        self.tarjetas_generadas[sku] = tarjeta_html
+                        
+                        # Marcar como generado (morado)
+                        self.set_estado_fila_tarjetas(sku, 'morado')
+                        self.root.after(0, lambda item=item_id: self.update_checkbox_and_color_tarjetas(item))
+                    
+                    productos_procesados += 1
+                    self.progress_var_tarjetas.set(f"Generando tarjetas... {productos_procesados}/{total_productos}")
+                    
+                except Exception as e:
+                    print(f"Error procesando producto: {e}")
+                    continue
+            
+            # Guardar historial
+            self.guardar_historial_estado()
+            
+            self.progress_var_tarjetas.set(f"✅ Tarjetas generadas: {len(self.tarjetas_generadas)}")
+            messagebox.showinfo("Éxito", f"Se generaron {len(self.tarjetas_generadas)} tarjetas correctamente.")
+            
+        except Exception as e:
+            self.progress_var_tarjetas.set("❌ Error en la generación")
+            messagebox.showerror("Error", f"Error durante la generación: {str(e)}")
+    
+    def _generar_tarjeta_individual(self, producto_data, plantilla_content):
+        """Genera una tarjeta individual basada en los datos del producto"""
+        try:
+            # Extraer datos del producto
+            sku = producto_data.get('Valor(es) del atributo 1', '')
+            marca = producto_data.get('Valor(es) del atributo 2', '')
+            precio_normal = producto_data.get('Precio normal', '')
+            precio_descuento = producto_data.get('precio con descuento', '')
+            porcentaje_desc = producto_data.get('Porcentajede descuento', '')
+            
+            # Construir URLs de imágenes
+            imagenes = [
+                producto_data.get('IMAGEN 1', ''),
+                producto_data.get('IMAGEN 2', ''),
+                producto_data.get('IMAGEN 3', '')
+            ]
+            
+            # Buscar logo de la marca
+            logo_marca = buscar_logo_marca(marca, self.logos_dict)
+            
+            # Buscar link de redirección específico para este SKU
+            link_producto = self.links_redireccion.get(sku, f"#producto-{sku}")
+            
+            # Generar tarjeta usando la función existente
+            row_dict = {
+                'SKU': sku,
+                'Marca': marca,
+                'Valor(es) del atributo 1': sku,
+                'Valor(es) del atributo 2': marca
+            }
+            
+            # Usar la misma lógica que vista_previa_tarjeta
+            if not plantilla_content or plantilla_content.strip() == '':
+                # Usar plantilla por defecto si no hay plantilla cargada
+                plantilla_tarjeta = (
+                    '<!-- Tarjeta de Producto: {SKU} -->\n'
+                    '<div class="product-card" onclick="window.open(\'{LINK}\',\'_blank\')"\n'
+                    '  <div class="product-image-container multi-image-hover">\n'
+                    '    <div class="product-brand-overlay"><img src="{LOGO}" alt="Logo {MARCA}"></div>\n'
+                    '    <img src="{IMG1}" alt="{SKU} - {MARCA} - Vista 1" class="product-img active">\n'
+                    '    <img src="{IMG2}" alt="{SKU} - {MARCA} - Vista 2" class="product-img">\n'
+                    '    <img src="{IMG3}" alt="{SKU} - {MARCA} - Vista 3" class="product-img">\n'
+                    '  </div>\n'
+                    '  <div class="product-info">\n'
+                    '    <span class="product-brand">{MARCA}</span>\n'
+                    '    <h2 class="product-name">{SKU}</h2>\n'
+                    '    <p class="product-price">\n'
+                    '      <span class="old-price">{OLD_PRICE}</span>\n'
+                    '      <span class="new-price">{NEW_PRICE}</span>\n'
+                    '    </p>\n'
+                    '  </div>\n'
+                    '</div>'
+                )
+                tarjeta_html = plantilla_tarjeta.format(
+                    SKU=sku,
+                    MARCA=marca,
+                    LOGO=logo_marca,
+                    IMG1=imagenes[0] if len(imagenes) > 0 else '',
+                    IMG2=imagenes[1] if len(imagenes) > 1 else '',
+                    IMG3=imagenes[2] if len(imagenes) > 2 else '',
+                    OLD_PRICE=precio_normal if precio_normal else '',
+                    NEW_PRICE=precio_descuento if precio_descuento else '',
+                    LINK=link_producto
+                )
+            else:
+                # Usar plantilla cargada con generar_tarjeta_catalogo
+                tarjeta_html = generar_tarjeta_catalogo(
+                    row_dict,
+                    imagenes,
+                    logo_marca,
+                    link_producto,
+                    precio_normal,
+                    precio_descuento,
+                    porcentaje_desc,
+                    plantilla_content
+                )
+            
+            return tarjeta_html
+            
+        except Exception as e:
+            print(f"Error generando tarjeta para {producto_data.get('Valor(es) del atributo 1', 'SKU desconocido')}: {e}")
+            return None
+    
+    def cargar_logos_tarjetas(self):
+        """Carga archivo de logos específico para la pestaña de tarjetas"""
+        filename = filedialog.askopenfilename(
+            title="Seleccionar archivo de logos",
+            filetypes=[("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*")]
+        )
+        if filename:
+            self.entry_logos_tarjetas.delete(0, tk.END)
+            self.entry_logos_tarjetas.insert(0, filename)
+            
+            # Cargar logos usando la función existente
+            try:
+                with open(filename, 'r', encoding='utf-8') as f:
+                    contenido = f.read()
+                
+                # Procesar líneas del archivo
+                lineas = contenido.strip().split('\n')
+                logos_cargados = 0
+                
+                for linea in lineas:
+                    linea = linea.strip()
+                    if linea and (':' in linea or '=' in linea):
+                        try:
+                            # Manejar tanto ':' como '=' como separadores
+                            if ':' in linea:
+                                marca, url = linea.split(':', 1)
+                            else:
+                                marca, url = linea.split('=', 1)
+                            marca = marca.strip()
+                            url = url.strip()
+                            if marca and url:
+                                self.logos_dict[marca] = url
+                                logos_cargados += 1
+                        except ValueError:
+                            continue
+                
+                messagebox.showinfo("Éxito", f"Se cargaron {logos_cargados} logos de marcas.")
+                
+            except Exception as e:
+                messagebox.showerror("Error", f"Error al cargar logos: {str(e)}")
+    
+    def cargar_links_redireccion(self):
+        """Carga archivo de links de redirección"""
+        filename = filedialog.askopenfilename(
+            title="Seleccionar archivo de links de redirección",
+            filetypes=[("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*")]
+        )
+        if filename:
+            self.entry_links_redireccion.delete(0, tk.END)
+            self.entry_links_redireccion.insert(0, filename)
+            
+            try:
+                with open(filename, 'r', encoding='utf-8') as f:
+                    contenido = f.read()
+                
+                # Procesar líneas del archivo
+                lineas = contenido.strip().split('\n')
+                links_cargados = 0
+                
+                for linea in lineas:
+                    linea = linea.strip()
+                    if linea and (':' in linea or '=' in linea):
+                        try:
+                            # Manejar tanto ':' como '=' como separadores
+                            if ':' in linea:
+                                sku, url = linea.split(':', 1)
+                            else:
+                                sku, url = linea.split('=', 1)
+                            sku = sku.strip()
+                            url = url.strip()
+                            
+                            # Remover prefijo 'Producto-' si existe
+                            if sku.startswith('Producto-'):
+                                sku = sku[9:]  # Remover 'Producto-'
+                            
+                            if sku and url:
+                                self.links_redireccion[sku] = url
+                                links_cargados += 1
+                        except ValueError:
+                            continue
+                
+                messagebox.showinfo("Éxito", f"Se cargaron {links_cargados} links de redirección.")
+                
+            except Exception as e:
+                messagebox.showerror("Error", f"Error al cargar links: {str(e)}")
+    
+    def insertar_tarjetas_en_catalogo(self):
+        """Inserta todas las tarjetas generadas en el catálogo"""
+        if not self.tarjetas_generadas:
+            messagebox.showwarning("Advertencia", "No hay tarjetas generadas para insertar.")
+            return
+        
+        catalogo_path = self.entry_catalogo_masivo.get().strip()
+        if not catalogo_path or not os.path.exists(catalogo_path):
+            messagebox.showerror("Error", "Selecciona un archivo de catálogo válido.")
+            return
+        
+        try:
+            # Leer catálogo actual
+            with open(catalogo_path, 'r', encoding='utf-8') as f:
+                contenido_catalogo = f.read()
+            
+            # Preparar todas las tarjetas para insertar
+            todas_las_tarjetas = '\n'.join(self.tarjetas_generadas.values())
+            
+            # Insertar antes del cierre de </main>
+            nuevo_contenido = contenido_catalogo.replace('</main>', f'{todas_las_tarjetas}\n</main>')
+            
+            # Escribir catálogo actualizado
+            with open(catalogo_path, 'w', encoding='utf-8') as f:
+                f.write(nuevo_contenido)
+            
+            messagebox.showinfo("Éxito", f"Se insertaron {len(self.tarjetas_generadas)} tarjetas en el catálogo correctamente.")
+            
+            # Limpiar tarjetas generadas después de insertar
+            self.tarjetas_generadas.clear()
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al insertar tarjetas en el catálogo: {str(e)}")
 
 if __name__ == "__main__":
     root = tk.Tk()
