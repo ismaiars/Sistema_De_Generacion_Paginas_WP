@@ -54,37 +54,6 @@ Dependencias Python:
 - `pyperclip`
 - `openpyxl` (solo si vas a cargar archivos `.xlsx`)
 
-Instalación rápida (PowerShell):
-
-```powershell
-cd C:\Users\LENOVO\Desktop\Sistema_De_Generacion_Paginas_WP\Sistema_De_Generacion_Paginas_WP
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install --upgrade pip
-pip install pandas requests pyperclip openpyxl
-```
-
----
-
-## Ejecución
-
-```powershell
-python programa_2.py
-```
-
-La aplicación abre una ventana con 3 pestañas:
-1) Página Individual
-2) Catálogo y Tarjetas
-3) Generación Masiva
-
-Comando rápido (one-liner):
-
-```powershell
-cd C:\Users\LENOVO\Desktop\Sistema_De_Generacion_Paginas_WP\Sistema_De_Generacion_Paginas_WP; python programa_2.py
-```
-
----
-
 ## Flujo de trabajo
 
 ### 1) Preparar los datos (CSV/Excel)
