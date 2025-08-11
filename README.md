@@ -12,8 +12,6 @@ El flujo está pensado para alimentar páginas/tiendas tipo WordPress/WooCommerc
 - [Características principales](#características-principales)
 - [Demo / Capturas](#demo--capturas)
 - [Requisitos](#requisitos)
-- [Instalación](#instalación-rápida-powershell)
-- [Ejecución](#ejecución)
 - [Flujo de trabajo](#flujo-de-trabajo)
   - [Preparar los datos (CSV/Excel)](#1-preparar-los-datos-csvexcel)
   - [Formato del archivo de logos de marcas](#2-formato-del-archivo-de-logos-de-marcas)
