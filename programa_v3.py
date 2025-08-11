@@ -85,64 +85,27 @@ def buscar_logo_marca(marca, logos_dict):
 
 def generar_tarjeta_catalogo(row, imagenes, logo_marca, link_producto, old_price, new_price, descuento, plantilla_tarjeta):
     # Usa la plantilla de tarjeta del catálogo (de Armazones-Tienda.html)
-    # Reemplaza los campos clave de manera más precisa
+    # Reemplaza los campos clave
     html = plantilla_tarjeta
-    
-    # Reemplazar imágenes de manera más específica
-    # Buscar solo dentro del contexto de la tarjeta actual
+    html = re.sub(r'src="[^"]+" alt="[^"]+ - Vista 1" class="product-img active"', f'src="{imagenes[0]}" alt="{row.get('SKU','')} - {row.get('Marca','')} - Vista 1" class="product-img active"', html)
+    html = re.sub(r'src="[^"]+" alt="[^"]+ - Vista 2" class="product-img"', f'src="{imagenes[1]}" alt="{row.get('SKU','')} - {row.get('Marca','')} - Vista 2" class="product-img"', html)
+    html = re.sub(r'src="[^"]+" alt="[^"]+ - Vista 3" class="product-img"', f'src="{imagenes[2]}" alt="{row.get('SKU','')} - {row.get('Marca','')} - Vista 3" class="product-img"', html)
+    html = re.sub(r'<div class="product-brand-overlay"><img src="[^"]+" alt="[^"]+"></div>', f'<div class="product-brand-overlay"><img src="{logo_marca}" alt="Logo {row.get('Marca','')}"></div>', html)
+    html = re.sub(r'<div class="discount-badge">[^<]*</div>', f'<div class="discount-badge">{descuento} de descuento</div>' if descuento else '', html)
+    html = re.sub(r'onclick="window.open\([^)]+\)"', f'onclick="window.open(\'{link_producto}\',\'_blank\')"', html)
+    # --- Ajuste de bloque de info: marca azul mayúsculas, SKU negritas debajo ---
+    # Reemplazo de bloque product-info
+    marca = row.get('Valor(es) del atributo 2', '').upper()
     sku = row.get('Valor(es) del atributo 1', '')
-    marca = row.get('Valor(es) del atributo 2', '')
-    
-    # Reemplazar imágenes principales con patrones más específicos
-    html = re.sub(r'src="[^"]+" alt="[^"]+ - Vista 1" class="product-img active"', 
-                  f'src="{imagenes[0]}" alt="{sku} - {marca} - Vista 1" class="product-img active"', html)
-    html = re.sub(r'src="[^"]+" alt="[^"]+ - Vista 2" class="product-img"', 
-                  f'src="{imagenes[1]}" alt="{sku} - {marca} - Vista 2" class="product-img"', html)
-    html = re.sub(r'src="[^"]+" alt="[^"]+ - Vista 3" class="product-img"', 
-                  f'src="{imagenes[2]}" alt="{sku} - {marca} - Vista 3" class="product-img"', html)
-    
-    # Reemplazar logo de marca
-    html = re.sub(r'<div class="product-brand-overlay"><img src="[^"]+" alt="[^"]+"></div>', 
-                  f'<div class="product-brand-overlay"><img src="{logo_marca}" alt="Logo {marca}"></div>', html)
-    
-    # Reemplazar badge de descuento de manera más segura
-    if descuento:
-        html = re.sub(r'<div class="discount-badge">[^<]*</div>', 
-                      f'<div class="discount-badge">{descuento} de descuento</div>', html)
-    # Si no hay descuento, mantener el div original pero vacío
-    else:
-        html = re.sub(r'<div class="discount-badge">[^<]*</div>', 
-                      '<div class="discount-badge"></div>', html)
-    
-    # Reemplazar link de redirección
-    html = re.sub(r'onclick="window.open\([^)]+\)"', 
-                  f'onclick="window.open(\'{link_producto}\',\'_blank\')"', html)
-    
-    # Reemplazar información del producto de manera más específica
-    marca_upper = marca.upper()
     bloque_info = (
-        f'<span class="product-brand text-blue-600 uppercase">{marca_upper}</span>\n'
+        f'<span class="product-brand text-blue-600 uppercase">{marca}</span>\n'
         f'<h2 class="product-name font-bold">{sku}</h2>'
     )
-    
-    # Buscar y reemplazar el bloque de información de manera más precisa
-    # Primero intentar con el patrón completo
-    patron_completo = r'<span class="product-brand">[^<]+</span>\s*<h2 class="product-name">[^<]+</h2>'
-    if re.search(patron_completo, html):
-        html = re.sub(patron_completo, bloque_info, html)
-    else:
-        # Si no encuentra el patrón completo, reemplazar por separado
-        html = re.sub(r'<span class="product-brand">[^<]+</span>', 
-                      f'<span class="product-brand text-blue-600 uppercase">{marca_upper}</span>', html)
-        html = re.sub(r'<h2 class="product-name">[^<]+</h2>', 
-                      f'<h2 class="product-name font-bold">{sku}</h2>', html)
-    
-    # Reemplazar precios de manera más específica
-    html = re.sub(r'<span class="old-price">[^<]*</span>', 
-                  f'<span class="old-price">{old_price}</span>', html)
-    html = re.sub(r'<span class="new-price">[^<]*</span>', 
-                  f'<span class="new-price">{new_price}</span>', html)
-    
+    # Reemplaza el bloque de marca y SKU
+    html = re.sub(r'<span class="product-brand">[^<]+</span>\s*<h2 class="product-name">[^<]+</h2>', bloque_info, html)
+    # Precios
+    html = re.sub(r'<span class="old-price">[^<]*</span>', f'<span class="old-price">{old_price}</span>', html)
+    html = re.sub(r'<span class="new-price">[^<]*</span>', f'<span class="new-price">{new_price}</span>', html)
     return html
 
 def generar_pagina_individual_desde_plantilla(row, imagenes, plantilla_path):
@@ -586,13 +549,7 @@ class GeneradorCatalogoApp:
                                              command=self.insertar_en_catalogo, state="disabled",
                                              font=('Segoe UI', 9, 'bold'), fg="#ffffff", bg="#28a745",
                                              relief="flat", padx=20, pady=8, cursor="hand2")
-        self.btn_insertar_tarjeta.pack(side="left", padx=(0, 10))
-        
-        self.btn_eliminar_tarjeta = tk.Button(actions_content, text="🗑️ Eliminar del Catálogo", 
-                                             command=self.eliminar_del_catalogo,
-                                             font=('Segoe UI', 9, 'bold'), fg="#ffffff", bg="#dc3545",
-                                             relief="flat", padx=20, pady=8, cursor="hand2")
-        self.btn_eliminar_tarjeta.pack(side="left")
+        self.btn_insertar_tarjeta.pack(side="left")
         
         # Área de previsualización
         preview_frame = tk.LabelFrame(self.tab2, text="Previsualización del Código", 
@@ -1053,7 +1010,6 @@ class GeneradorCatalogoApp:
             (self.btn_generar_tarjeta, "#007bff", "#0056b3"),
             (self.btn_copiar_tarjeta, "#6c757d", "#545b62"),
             (self.btn_insertar_tarjeta, "#28a745", "#1e7e34"),
-            (self.btn_eliminar_tarjeta, "#dc3545", "#c82333"),
             (self.btn_generar_tarjetas_masivo, "#6f42c1", "#5a32a3"),
             (self.btn_insertar_tarjetas_catalogo, "#28a745", "#1e7e34")
         ]
@@ -1351,16 +1307,10 @@ class GeneradorCatalogoApp:
         """Procesa la plantilla HTML con los datos del producto usando regex como en generación individual"""
         html_content = plantilla_content
         
-        # Obtener imágenes del producto del CSV en orden original
-        imagenes_csv = [
-            producto_data.get('imagen1', '') or '',
-            producto_data.get('imagen2', '') or '',
-            producto_data.get('imagen3', '') or ''
-        ]
-        
-        # Reordenar imágenes para la tarjeta según la lógica especificada
-        imagenes_ordenadas = reordenar_imagenes_para_tarjeta(imagenes_csv)
-        img1, img2, img3 = imagenes_ordenadas
+        # Obtener imágenes del producto
+        img1 = producto_data.get('imagen1', '') or ''
+        img2 = producto_data.get('imagen2', '') or ''
+        img3 = producto_data.get('imagen3', '') or ''
         
         # Usar patrones regex compilados para reemplazar imágenes (igual que en generación individual)
         html_content = _REGEX_PATTERNS['img_src_1'].sub('src="' + img1 + '"', html_content)
@@ -2171,15 +2121,7 @@ class GeneradorCatalogoApp:
             messagebox.showwarning("Advertencia", "Selecciona un producto de la tabla.")
             return
             
-        # Obtener imágenes del CSV en orden original
-        imagenes_csv = [
-            self.producto_actual.get("IMAGEN 1", ""),
-            self.producto_actual.get("IMAGEN 2", ""),
-            self.producto_actual.get("IMAGEN 3", "")
-        ]
-        
-        # Reordenar imágenes para la tarjeta según la lógica especificada
-        imagenes = reordenar_imagenes_para_tarjeta(imagenes_csv)
+        imagenes = [self.img1.get(), self.img2.get(), self.img3.get()]
         
         # Validación de URLs en background (Fase 2)
         self.progress_var.set("Validando imágenes...")
@@ -2269,179 +2211,12 @@ class GeneradorCatalogoApp:
         if not self.tarjeta_html_actual:
             messagebox.showerror("Error", "Genera primero la tarjeta individual.")
             return
-        
-        try:
-            # Leer el catálogo actual
-            with open(self.catalogo_path, 'r', encoding='utf-8') as f:
-                contenido = f.read()
-            
-            # Verificar que el contenido no esté corrupto
-            if len(contenido.strip()) == 0:
-                messagebox.showerror("Error", "El archivo de catálogo está vacío o corrupto.")
-                return
-            
-            # Buscar el punto de inserción de manera más precisa
-            # Primero intentar encontrar </main>
-            if '</main>' in contenido:
-                nuevo_contenido = contenido.replace('</main>', f'{self.tarjeta_html_actual}\n</main>')
-            # Si no hay </main>, buscar antes del cierre del body
-            elif '</body>' in contenido:
-                nuevo_contenido = contenido.replace('</body>', f'{self.tarjeta_html_actual}\n</body>')
-            # Si no hay ninguno, agregar al final del archivo
-            else:
-                nuevo_contenido = contenido + '\n' + self.tarjeta_html_actual
-            
-            # Verificar que el nuevo contenido sea válido
-            if len(nuevo_contenido) < len(contenido):
-                messagebox.showerror("Error", "Se detectó un problema con la inserción. No se realizó el cambio.")
-                return
-            
-            # Crear una copia de respaldo antes de escribir
-            backup_path = self.catalogo_path + '.backup'
-            with open(backup_path, 'w', encoding='utf-8') as f:
-                f.write(contenido)
-            
-            # Escribir el nuevo contenido
-            with open(self.catalogo_path, 'w', encoding='utf-8') as f:
-                f.write(nuevo_contenido)
-            
-            messagebox.showinfo("Éxito", "Tarjeta añadida correctamente al catálogo.")
-            
-        except Exception as e:
-            messagebox.showerror("Error", f"Error al insertar en el catálogo: {str(e)}")
-
-    def eliminar_del_catalogo(self):
-        if not self.catalogo_path:
-            messagebox.showerror("Error", "Selecciona el archivo de catálogo.")
-            return
-        if self.producto_actual is None or self.producto_actual.empty:
-            messagebox.showerror("Error", "Selecciona un producto de la tabla.")
-            return
-        
-        # Obtener el SKU del producto actual
-        sku = self.producto_actual.get('Valor(es) del atributo 1', '')
-        if not sku:
-            messagebox.showerror("Error", "No se pudo obtener el SKU del producto.")
-            return
-        
-        # Confirmar la eliminación
-        confirmacion = messagebox.askyesno("Confirmar eliminación", 
-                                          f"¿Estás seguro de que quieres eliminar la tarjeta del producto '{sku}' del catálogo?")
-        if not confirmacion:
-            return
-        
-        try:
-            with open(self.catalogo_path, 'r', encoding='utf-8') as f:
-                contenido = f.read()
-            
-            import re
-            
-            # Guardar una copia del contenido original para comparar
-            contenido_original = contenido
-            
-            # Buscar la tarjeta de manera más precisa
-            # Primero, buscar comentarios que identifiquen la tarjeta
-            comentario_tarjeta = f"<!-- Tarjeta de Producto: {sku} -->"
-            
-            # Buscar desde el comentario hasta el final del div de la tarjeta
-            if comentario_tarjeta in contenido:
-                # Encontrar la posición del comentario
-                inicio_comentario = contenido.find(comentario_tarjeta)
-                
-                # Buscar el div que sigue al comentario
-                div_inicio = contenido.find('<div class="product-card"', inicio_comentario)
-                if div_inicio == -1:
-                    div_inicio = contenido.find('<div class="product-card', inicio_comentario)
-                
-                if div_inicio != -1:
-                    # Encontrar el div de cierre correspondiente
-                    nivel = 0
-                    pos = div_inicio
-                    div_fin = -1
-                    
-                    while pos < len(contenido):
-                        if contenido[pos:pos+5] == '<div ':
-                            nivel += 1
-                        elif contenido[pos:pos+6] == '</div>':
-                            nivel -= 1
-                            if nivel == 0:
-                                div_fin = pos + 6
-                                break
-                        pos += 1
-                    
-                    if div_fin != -1:
-                        # Eliminar desde el comentario hasta el final del div
-                        contenido_nuevo = contenido[:inicio_comentario] + contenido[div_fin:]
-                        
-                        # Verificar que el contenido no se haya corrompido
-                        # El contenido nuevo debe ser menor que el original (porque eliminamos algo)
-                        # pero no demasiado menor (máximo 20% menos)
-                        if len(contenido_nuevo) < len(contenido_original) and len(contenido_nuevo) > len(contenido_original) * 0.8:
-                            with open(self.catalogo_path, 'w', encoding='utf-8') as f:
-                                f.write(contenido_nuevo)
-                            messagebox.showinfo("Éxito", f"Tarjeta del producto '{sku}' eliminada correctamente del catálogo.")
-                        else:
-                            messagebox.showerror("Error", "Se detectó una posible corrupción del archivo. No se realizó la eliminación.")
-                    else:
-                        messagebox.showwarning("Advertencia", f"No se pudo encontrar el final de la tarjeta del producto '{sku}'.")
-                else:
-                    messagebox.showwarning("Advertencia", f"No se pudo encontrar la estructura de la tarjeta del producto '{sku}'.")
-            else:
-                # Si no hay comentario, buscar por SKU en el contenido de manera más segura
-                # Buscar en los atributos alt de las imágenes
-                patron_alt = rf'alt="[^"]*{re.escape(sku)}[^"]*"'
-                match_alt = re.search(patron_alt, contenido)
-                
-                if match_alt:
-                    # Encontrar el div padre que contiene esta imagen
-                    pos_alt = match_alt.start()
-                    
-                    # Buscar hacia atrás para encontrar el div de inicio
-                    pos = pos_alt
-                    while pos >= 0:
-                        if contenido[pos:pos+5] == '<div ' and 'product-card' in contenido[pos:pos+100]:
-                            div_inicio = pos
-                            break
-                        pos -= 1
-                    else:
-                        messagebox.showwarning("Advertencia", f"No se pudo encontrar la estructura de la tarjeta del producto '{sku}'.")
-                        return
-                    
-                    # Encontrar el div de cierre correspondiente
-                    nivel = 0
-                    pos = div_inicio
-                    div_fin = -1
-                    
-                    while pos < len(contenido):
-                        if contenido[pos:pos+5] == '<div ':
-                            nivel += 1
-                        elif contenido[pos:pos+6] == '</div>':
-                            nivel -= 1
-                            if nivel == 0:
-                                div_fin = pos + 6
-                                break
-                        pos += 1
-                    
-                    if div_fin != -1:
-                        # Eliminar el div completo
-                        contenido_nuevo = contenido[:div_inicio] + contenido[div_fin:]
-                        
-                        # Verificar que el contenido no se haya corrompido
-                        # El contenido nuevo debe ser menor que el original (porque eliminamos algo)
-                        # pero no demasiado menor (máximo 20% menos)
-                        if len(contenido_nuevo) < len(contenido_original) and len(contenido_nuevo) > len(contenido_original) * 0.8:
-                            with open(self.catalogo_path, 'w', encoding='utf-8') as f:
-                                f.write(contenido_nuevo)
-                            messagebox.showinfo("Éxito", f"Tarjeta del producto '{sku}' eliminada correctamente del catálogo.")
-                        else:
-                            messagebox.showerror("Error", "Se detectó una posible corrupción del archivo. No se realizó la eliminación.")
-                    else:
-                        messagebox.showwarning("Advertencia", f"No se pudo encontrar el final de la tarjeta del producto '{sku}'.")
-                else:
-                    messagebox.showwarning("Advertencia", f"No se encontró la tarjeta del producto '{sku}' en el catálogo.")
-                
-        except Exception as e:
-            messagebox.showerror("Error", f"Error al eliminar la tarjeta: {str(e)}")
+        with open(self.catalogo_path, 'r', encoding='utf-8') as f:
+            contenido = f.read()
+        nuevo_contenido = contenido.replace('</main>', f'{self.tarjeta_html_actual}\n</main>')
+        with open(self.catalogo_path, 'w', encoding='utf-8') as f:
+            f.write(nuevo_contenido)
+        messagebox.showinfo("Éxito", "Tarjeta añadida correctamente al catálogo.")
 
     def sync_images_to_tab2(self, event=None):
         self.img1_2.delete(0, tk.END)
@@ -2763,15 +2538,12 @@ class GeneradorCatalogoApp:
             precio_descuento = producto_data.get('precio con descuento', '')
             porcentaje_desc = producto_data.get('Porcentajede descuento', '')
             
-            # Construir URLs de imágenes del CSV en orden original
-            imagenes_csv = [
+            # Construir URLs de imágenes
+            imagenes = [
                 producto_data.get('IMAGEN 1', ''),
                 producto_data.get('IMAGEN 2', ''),
                 producto_data.get('IMAGEN 3', '')
             ]
-            
-            # Reordenar imágenes para la tarjeta según la lógica especificada
-            imagenes = reordenar_imagenes_para_tarjeta(imagenes_csv)
             
             # Buscar logo de la marca
             logo_marca = buscar_logo_marca(marca, self.logos_dict)
@@ -2941,34 +2713,11 @@ class GeneradorCatalogoApp:
             with open(catalogo_path, 'r', encoding='utf-8') as f:
                 contenido_catalogo = f.read()
             
-            # Verificar que el contenido no esté corrupto
-            if len(contenido_catalogo.strip()) == 0:
-                messagebox.showerror("Error", "El archivo de catálogo está vacío o corrupto.")
-                return
-            
             # Preparar todas las tarjetas para insertar
             todas_las_tarjetas = '\n'.join(self.tarjetas_generadas.values())
             
-            # Buscar el punto de inserción de manera más precisa
-            # Primero intentar encontrar </main>
-            if '</main>' in contenido_catalogo:
-                nuevo_contenido = contenido_catalogo.replace('</main>', f'{todas_las_tarjetas}\n</main>')
-            # Si no hay </main>, buscar antes del cierre del body
-            elif '</body>' in contenido_catalogo:
-                nuevo_contenido = contenido_catalogo.replace('</body>', f'{todas_las_tarjetas}\n</body>')
-            # Si no hay ninguno, agregar al final del archivo
-            else:
-                nuevo_contenido = contenido_catalogo + '\n' + todas_las_tarjetas
-            
-            # Verificar que el nuevo contenido sea válido
-            if len(nuevo_contenido) < len(contenido_catalogo):
-                messagebox.showerror("Error", "Se detectó un problema con la inserción. No se realizó el cambio.")
-                return
-            
-            # Crear una copia de respaldo antes de escribir
-            backup_path = catalogo_path + '.backup'
-            with open(backup_path, 'w', encoding='utf-8') as f:
-                f.write(contenido_catalogo)
+            # Insertar antes del cierre de </main>
+            nuevo_contenido = contenido_catalogo.replace('</main>', f'{todas_las_tarjetas}\n</main>')
             
             # Escribir catálogo actualizado
             with open(catalogo_path, 'w', encoding='utf-8') as f:
@@ -2981,48 +2730,6 @@ class GeneradorCatalogoApp:
             
         except Exception as e:
             messagebox.showerror("Error", f"Error al insertar tarjetas en el catálogo: {str(e)}")
-
-def reordenar_imagenes_para_tarjeta(imagenes):
-    """
-    Reordena las imágenes para la tarjeta según la lógica:
-    1. Priorizar la imagen que contenga "main" en el nombre
-    2. Si no hay "main", usar la segunda imagen del CSV como principal
-    3. Mantener el orden original para las otras imágenes
-    """
-    if not imagenes or len(imagenes) == 0:
-        return imagenes
-    
-    # Filtrar imágenes válidas
-    imagenes_validas = [img for img in imagenes if img and str(img).lower() != 'nan']
-    
-    if len(imagenes_validas) == 0:
-        return imagenes
-    
-    # Buscar imagen con "main" en el nombre
-    imagen_main = None
-    otras_imagenes = []
-    
-    for img in imagenes_validas:
-        if 'main' in str(img).lower():
-            imagen_main = img
-        else:
-            otras_imagenes.append(img)
-    
-    # Si encontramos imagen "main", ponerla como primera
-    if imagen_main:
-        imagenes_ordenadas = [imagen_main] + otras_imagenes
-    # Si no hay "main" y hay al menos 2 imágenes, usar la segunda como principal
-    elif len(imagenes_validas) >= 2:
-        imagenes_ordenadas = [imagenes_validas[1]] + [imagenes_validas[0]] + imagenes_validas[2:]
-    else:
-        # Si solo hay una imagen, mantenerla como está
-        imagenes_ordenadas = imagenes_validas
-    
-    # Asegurar que siempre tengamos 3 elementos (rellenar con vacío si es necesario)
-    while len(imagenes_ordenadas) < 3:
-        imagenes_ordenadas.append('')
-    
-    return imagenes_ordenadas[:3]
 
 if __name__ == "__main__":
     root = tk.Tk()
