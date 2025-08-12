@@ -106,19 +106,13 @@ def generar_tarjeta_catalogo(row, imagenes, logo_marca, link_producto, old_price
                   f'<div class="product-brand-overlay"><img src="{logo_marca}" alt="Logo {marca}"></div>', html)
     
     # Reemplazar badge de descuento de manera más segura
-    def es_valido(valor):
-        if valor is None:
-            return False
-        valor_str = str(valor).strip().lower()
-        return bool(valor_str and valor_str not in ['nan', 'none', ''])
-    
-    if es_valido(descuento):
+    if descuento:
         html = re.sub(r'<div class="discount-badge">[^<]*</div>', 
                       f'<div class="discount-badge">{descuento} de descuento</div>', html)
-    # Si no hay descuento, ocultar completamente el div
+    # Si no hay descuento, mantener el div original pero vacío
     else:
         html = re.sub(r'<div class="discount-badge">[^<]*</div>', 
-                      '', html)
+                      '<div class="discount-badge"></div>', html)
     
     # Reemplazar link de redirección
     html = re.sub(r'onclick="window.open\([^)]+\)"', 
@@ -144,18 +138,10 @@ def generar_tarjeta_catalogo(row, imagenes, logo_marca, link_producto, old_price
                       f'<h2 class="product-name font-bold">{sku}</h2>', html)
     
     # Reemplazar precios de manera más específica
-    if es_valido(descuento) and es_valido(new_price):
-        # Caso con descuento
-        html = re.sub(r'<span class="old-price">[^<]*</span>',
-                    f'<span class="old-price">{old_price}</span>', html)
-        html = re.sub(r'<span class="new-price">[^<]*</span>',
-                    f'<span class="new-price">{new_price}</span>', html)
-    else:
-        # Caso sin descuento: usar solo el precio normal y quitar tachado
-        html = re.sub(r'<span class="old-price">[^<]*</span>',
-                    '', html)  # Eliminamos precio tachado
-        html = re.sub(r'<span class="new-price">[^<]*</span>',
-                    f'<span class="new-price">{old_price}</span>', html)
+    html = re.sub(r'<span class="old-price">[^<]*</span>', 
+                  f'<span class="old-price">{old_price}</span>', html)
+    html = re.sub(r'<span class="new-price">[^<]*</span>', 
+                  f'<span class="new-price">{new_price}</span>', html)
     
     return html
 
@@ -195,33 +181,9 @@ def generar_pagina_individual_desde_plantilla(row, imagenes, plantilla_path):
     # Usar patrones regex compilados para mejor rendimiento
     html = _REGEX_PATTERNS['product_brand'].sub(f'<h1 id="product-brand" class="text-4xl md:text-5xl font-bold text-orange-500 uppercase">{row.get("Valor(es) del atributo 2", "")}</h1>', html)
     html = _REGEX_PATTERNS['product_model'].sub(f'<p id="product-model" class="text-xl text-gray-400 mb-4">{row.get("Valor(es) del atributo 1", "")}</p>', html)
-    
-    # Manejar precios y descuentos de manera condicional
-    precio_normal = row.get("Precio normal", "")
-    precio_descuento = row.get("precio con descuento", "")
-    porcentaje_descuento = row.get("Porcentajede descuento", "")
-    
-    # Verificar si hay descuento válido (no vacío, no nan, no None)
-    def es_valido(valor):
-        if valor is None:
-            return False
-        valor_str = str(valor).strip().lower()
-        return bool(valor_str and valor_str not in ['nan', 'none', ''])
-    
-    tiene_descuento = es_valido(precio_descuento) and es_valido(porcentaje_descuento)
-    
-    if tiene_descuento:
-        # Mostrar precio tachado, badge de descuento y precio con descuento
-        html = _REGEX_PATTERNS['old_price'].sub(f'<span class="text-2xl text-gray-400 line-through mr-2">{precio_normal}</span>', html)
-        html = _REGEX_PATTERNS['discount_badge'].sub(f'<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">{porcentaje_descuento}</span>', html)
-        html = _REGEX_PATTERNS['new_price'].sub(f'<span class="text-5xl font-extrabold text-black">{precio_descuento}</span>', html)
-    else:
-        # Solo mostrar el precio normal (sin descuento)
-        # Ocultar precio tachado y badge de descuento
-        html = _REGEX_PATTERNS['old_price'].sub('', html)
-        html = _REGEX_PATTERNS['discount_badge'].sub('', html)
-        # Mostrar solo el precio normal como precio principal
-        html = _REGEX_PATTERNS['new_price'].sub(f'<span class="text-5xl font-extrabold text-black">{precio_normal}</span>', html)
+    html = _REGEX_PATTERNS['old_price'].sub(f'<span class="text-2xl text-gray-400 line-through mr-2">{row.get("Precio normal", "")}</span>', html)
+    html = _REGEX_PATTERNS['discount_badge'].sub(f'<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">{row.get("Porcentajede descuento", "")}</span>', html)
+    html = _REGEX_PATTERNS['new_price'].sub(f'<span class="text-5xl font-extrabold text-black">{row.get("precio con descuento", "")}</span>', html)
 
     # --- Reemplazo de tabla de especificaciones ---
     # Mapeo de campos: (ajusta si tus columnas cambian)
@@ -1429,46 +1391,33 @@ class GeneradorCatalogoApp:
         
         # Reemplazar precios
         try:
-            # Verificar si hay descuento válido (no vacío, no nan, no None)
-            def es_valido(valor):
-                if valor is None:
-                    return False
-                valor_str = str(valor).strip().lower()
-                return bool(valor_str and valor_str not in ['nan', 'none', ''])
-            
-            tiene_descuento = es_valido(precio_descuento) and es_valido(porcentaje_descuento)
-            
-            if tiene_descuento and precio_normal and '$' in str(precio_normal) and '$' in str(precio_descuento):
-                # Formatear precio normal (tachado)
-                precio_normal_float = float(str(precio_normal).replace('$', '').replace(',', ''))
-                precio_normal_formateado = f'${precio_normal_float:,.2f}'
-                
-                # Formatear precio con descuento
-                precio_descuento_float = float(str(precio_descuento).replace('$', '').replace(',', ''))
-                precio_descuento_formateado = f'${precio_descuento_float:,.2f}'
-                
-                # Formatear porcentaje de descuento
-                porcentaje_float = float(str(porcentaje_descuento).replace('%', ''))
-                porcentaje_formateado = f'{porcentaje_float:.0f}%'
-                
-                # Reemplazar precio tachado
-                html_content = _REGEX_PATTERNS['old_price'].sub('<span class="text-2xl text-gray-400 line-through mr-2">' + precio_normal_formateado + '</span>', html_content)
-                
-                # Reemplazar badge de descuento
-                html_content = _REGEX_PATTERNS['discount_badge'].sub('<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">' + porcentaje_formateado + '</span>', html_content)
-                
-                # Reemplazar precio actual
-                html_content = _REGEX_PATTERNS['new_price'].sub('<span class="text-5xl font-extrabold text-black">' + precio_descuento_formateado + '</span>', html_content)
+            if precio_normal and precio_descuento and porcentaje_descuento:
+                # Validar que los precios no sean SKUs o valores inválidos
+                if '$' in str(precio_normal) and '$' in str(precio_descuento):
+                    # Formatear precio normal (tachado)
+                    precio_normal_float = float(str(precio_normal).replace('$', '').replace(',', ''))
+                    precio_normal_formateado = f'${precio_normal_float:,.2f}'
+                    
+                    # Formatear precio con descuento
+                    precio_descuento_float = float(str(precio_descuento).replace('$', '').replace(',', ''))
+                    precio_descuento_formateado = f'${precio_descuento_float:,.2f}'
+                    
+                    # Formatear porcentaje de descuento
+                    porcentaje_float = float(str(porcentaje_descuento).replace('%', ''))
+                    porcentaje_formateado = f'{porcentaje_float:.0f}%'
+                    
+                    # Reemplazar precio tachado
+                    html_content = _REGEX_PATTERNS['old_price'].sub('<span class="text-2xl text-gray-400 line-through mr-2">' + precio_normal_formateado + '</span>', html_content)
+                    
+                    # Reemplazar badge de descuento
+                    html_content = _REGEX_PATTERNS['discount_badge'].sub('<span class="inline-block bg-red-100 text-red-600 text-lg font-bold px-2 py-1 rounded align-middle mr-2">' + porcentaje_formateado + '</span>', html_content)
+                    
+                    # Reemplazar precio actual
+                    html_content = _REGEX_PATTERNS['new_price'].sub('<span class="text-5xl font-extrabold text-black">' + precio_descuento_formateado + '</span>', html_content)
             elif precio_normal and '$' in str(precio_normal):
-                # Solo precio normal disponible (sin descuento)
+                # Solo precio normal disponible
                 precio_normal_float = float(str(precio_normal).replace('$', '').replace(',', ''))
                 precio_normal_formateado = f'${precio_normal_float:,.2f}'
-                
-                # Ocultar precio tachado y badge de descuento
-                html_content = _REGEX_PATTERNS['old_price'].sub('', html_content)
-                html_content = _REGEX_PATTERNS['discount_badge'].sub('', html_content)
-                
-                # Mostrar solo el precio normal como precio principal
                 html_content = _REGEX_PATTERNS['new_price'].sub('<span class="text-5xl font-extrabold text-black">' + precio_normal_formateado + '</span>', html_content)
         except Exception as e:
             print(f"Error procesando precios: {e}")
@@ -2278,27 +2227,6 @@ class GeneradorCatalogoApp:
         )
         link_redireccion = self.entry_link_tarjeta.get().strip() or self.producto_actual.get("Link_Producto", "")
         if not self.plantilla_tarjeta:
-            # Verificar si hay descuento válido
-            precio_normal = self.producto_actual.get("Precio normal", "")
-            precio_descuento = self.producto_actual.get("precio con descuento", "")
-            porcentaje_descuento = self.producto_actual.get("Porcentajede descuento", "")
-            
-            def es_valido(valor):
-                if valor is None:
-                    return False
-                valor_str = str(valor).strip().lower()
-                return bool(valor_str and valor_str not in ['nan', 'none', ''])
-            
-            tiene_descuento = es_valido(precio_descuento) and es_valido(porcentaje_descuento)
-            
-            # Determinar qué precios mostrar
-            if tiene_descuento:
-                old_price_display = precio_normal if precio_normal else ''
-                new_price_display = precio_descuento if precio_descuento else ''
-            else:
-                old_price_display = ''  # No mostrar precio tachado
-                new_price_display = precio_normal if precio_normal else ''  # Mostrar precio normal como principal
-            
             tarjeta_html = plantilla_tarjeta.format(
                 SKU=self.producto_actual.get("Valor(es) del atributo 1", ""),
                 MARCA=self.producto_actual.get("Valor(es) del atributo 2", ""),
@@ -2306,8 +2234,8 @@ class GeneradorCatalogoApp:
                 IMG1=imagenes[0],
                 IMG2=imagenes[1],
                 IMG3=imagenes[2],
-                OLD_PRICE=old_price_display,
-                NEW_PRICE=new_price_display,
+                OLD_PRICE=self.producto_actual.get("Precio normal", ""),
+                NEW_PRICE=self.producto_actual.get("precio con descuento", ""),
                 LINK=link_redireccion
             )
             tarjeta_html = tarjeta_html.replace('<!-- Tarjeta de Producto: {SKU} -->', f'<!-- Tarjeta de Producto: {self.producto_actual.get("Valor(es) del atributo 1", "")} -->')
@@ -2881,23 +2809,6 @@ class GeneradorCatalogoApp:
                     '  </div>\n'
                     '</div>'
                 )
-                # Verificar si hay descuento válido
-                def es_valido(valor):
-                    if valor is None:
-                        return False
-                    valor_str = str(valor).strip().lower()
-                    return bool(valor_str and valor_str not in ['nan', 'none', ''])
-                
-                tiene_descuento = es_valido(precio_descuento) and es_valido(porcentaje_desc)
-                
-                # Determinar qué precios mostrar
-                if tiene_descuento:
-                    old_price_display = precio_normal if precio_normal else ''
-                    new_price_display = precio_descuento if precio_descuento else ''
-                else:
-                    old_price_display = ''  # No mostrar precio tachado
-                    new_price_display = precio_normal if precio_normal else ''  # Mostrar precio normal como principal
-                
                 tarjeta_html = plantilla_tarjeta.format(
                     SKU=sku,
                     MARCA=marca,
@@ -2905,8 +2816,8 @@ class GeneradorCatalogoApp:
                     IMG1=imagenes[0] if len(imagenes) > 0 else '',
                     IMG2=imagenes[1] if len(imagenes) > 1 else '',
                     IMG3=imagenes[2] if len(imagenes) > 2 else '',
-                    OLD_PRICE=old_price_display,
-                    NEW_PRICE=new_price_display,
+                    OLD_PRICE=precio_normal if precio_normal else '',
+                    NEW_PRICE=precio_descuento if precio_descuento else '',
                     LINK=link_producto
                 )
             else:
